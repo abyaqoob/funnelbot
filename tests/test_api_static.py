@@ -19,4 +19,4 @@ def test_static_css_served(client: TestClient):
 def test_static_js_served(client: TestClient):
     response = client.get("/app.js")
     assert response.status_code == 200
-    assert "FunnelSimulator" in response.text
+    assert "FunnelApp" in response.text

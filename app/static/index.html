@@ -3,265 +3,654 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FunnelBot - DM & Comment Funnel Simulator</title>
+  <title>FunnelBot - Zero-Budget Social Funnel Automation</title>
   <link rel="stylesheet" href="/styles.css">
+  <!-- Chart.js via CDN for lightweight Phase 4 analytics visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-  <!-- Top Navigation Header -->
-  <header class="app-header">
-    <div class="brand-wrapper">
-      <div class="brand-logo">⚡</div>
-      <div class="brand-text">
-        <h1>FunnelBot <span class="badge-pill">Zero-Budget Engine</span></h1>
-        <p>Channel-Agnostic Social Funnel Automation & Local NLP</p>
-      </div>
-    </div>
+  <!-- Floating SaaS Shell Container -->
+  <div class="app-wrapper">
 
-    <div class="header-actions">
-      <div class="system-status" id="systemStatus">
-        <span class="status-dot"></span> System Operational
+    <!-- 1. Left Vertical Icon Sidebar (Dock) -->
+    <aside class="sidebar-dock" aria-label="Navigation Dock">
+      <div class="dock-logo" title="FunnelBot Automation">
+        ⚡
       </div>
-      <button class="btn btn-reset" id="resetBtn" title="Wipe demo state, opt-outs, and rule cooldowns">
-        🔄 Reset Demo
+
+      <button class="dock-action-btn" id="dockQuickActionBtn" title="Quick Add / Demo Shortcut">
+        +
       </button>
-      <a href="/admin.html" class="btn btn-nav" id="adminLink">
-        📊 Admin Dashboard
-      </a>
-    </div>
-  </header>
 
-  <!-- Walkthrough Guidance Banner -->
-  <aside class="demo-banner">
-    <div class="banner-steps">
-      <span class="step-chip"><strong>1. Comment:</strong> Type <code>GUIDE</code> or <code>giude</code></span>
-      <span class="step-chip"><strong>2. Walkthrough:</strong> Pick choices in DM</span>
-      <span class="step-chip"><strong>3. Interrupt:</strong> Ask <em>"Where are you located?"</em> mid-flow</span>
-      <span class="step-chip"><strong>4. Hot Lead:</strong> Enter email & verify 100 pts score</span>
-    </div>
-    <div style="color:#94a3b8; font-size:0.75rem;">
-      No login required • Free local NLP
-    </div>
-  </aside>
+      <nav class="dock-nav">
+        <button class="dock-item active" data-tab="simulator" title="Simulator Demo (Recruiter View)">
+          📱
+        </button>
+        <button class="dock-item" data-tab="analytics" title="Funnel Analytics & Charts">
+          📊
+        </button>
+        <button class="dock-item" data-tab="rules" title="Keyword Trigger Rules">
+          ⚡
+        </button>
+        <button class="dock-item" data-tab="faqs" title="FAQ Knowledge Base">
+          💬
+        </button>
+        <button class="dock-item" data-tab="flows" title="Qualification Flow Editor">
+          🔀
+        </button>
+        <button class="dock-item" data-tab="leads" title="Captured Leads Table">
+          👥
+        </button>
+        <button class="dock-item" data-tab="logs" title="Audit & Telemetry Logs">
+          📜
+        </button>
+      </nav>
 
-  <!-- Main 3-Column Layout -->
-  <main class="main-layout">
-
-    <!-- Column 1: Simulated Instagram Post & Comments -->
-    <section class="column-card" aria-label="Instagram Post Simulator">
-      <div class="column-header">
-        <h2>📸 Public Post (Comments)</h2>
-        <span class="header-tag">Channel: Instagram / Web</span>
+      <div class="dock-footer">
+        <div class="dock-avatar" title="Demo Recruiter">
+          R
+        </div>
       </div>
+    </aside>
 
-      <div class="post-scroll-area">
-        <article class="ig-post">
-          <!-- Post Author Header -->
-          <div class="ig-post-header">
-            <div class="ig-avatar">
-              <div class="ig-avatar-inner">⚡</div>
+    <!-- 2. Main Viewport -->
+    <div class="main-viewport">
+
+      <!-- Viewport Header -->
+      <header class="viewport-header">
+        <div class="header-left">
+          <div class="header-title-wrapper">
+            <h1 id="pageTitle">
+              <span>All Channels</span>
+              <span class="badge-subtle" style="font-size:0.7rem; color:#16a34a; background:#dcfce7; border-color:#bbf7d0;">Free NLP</span>
+            </h1>
+            <p id="pageSubtitle">Multi-Channel DM & Comment Funnel Automation ($0 Budget)</p>
+          </div>
+
+          <!-- Top View Pill Switcher -->
+          <div class="pill-switcher">
+            <button class="pill-btn active" data-tab="simulator">Simulator</button>
+            <button class="pill-btn" data-tab="analytics">Analytics</button>
+            <button class="pill-btn" data-tab="leads">Leads</button>
+            <button class="pill-btn" data-tab="rules">Rules</button>
+            <button class="pill-btn" data-tab="faqs">FAQs</button>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <div class="status-badge" id="systemStatus">
+            <span class="status-indicator"></span> System Operational
+          </div>
+
+          <button class="btn-header" id="authBtn" title="Set Admin Password for Mutations">
+            🔑 Admin: <span id="authStatusText">Demo Mode</span>
+          </button>
+
+          <button class="btn-header btn-reset" id="resetBtn" title="Reset Demo User & Cooldowns">
+            🔄 Reset Demo
+          </button>
+        </div>
+      </header>
+
+      <!-- ==============================================================
+           TAB 1: SIMULATOR (SPLIT SCREEN 3-COLUMN)
+           ============================================================== -->
+      <section class="view-panel active" id="panel-simulator">
+        <div class="simulator-grid">
+
+          <!-- Col 1: Public Post & Comments -->
+          <div class="column-card">
+            <div class="column-card-header">
+              <h3>📸 Instagram Post</h3>
+              <span class="badge-subtle">Channel: Instagram</span>
+            </div>
+
+            <div class="post-scroll-body">
+              <div class="ig-card">
+                <div class="ig-card-author">
+                  <div class="ig-avatar-ring">
+                    <div class="ig-avatar-core">⚡</div>
+                  </div>
+                  <div>
+                    <strong style="font-size:0.85rem;">growth_automation</strong>
+                    <div style="font-size:0.7rem; color:var(--text-muted);">Sponsored • Automation Agency</div>
+                  </div>
+                </div>
+
+                <div class="ig-banner-media">
+                  <span class="ig-banner-badge">Free Growth Guide</span>
+                  <h4>Automate DM Leads with Zero Paid APIs</h4>
+                  <p>Comment <strong>"GUIDE"</strong> below to get our instant blueprint in your DMs!</p>
+                </div>
+
+                <div class="ig-actions">
+                  <div class="ig-actions-left">
+                    <span>❤️</span>
+                    <span>💬</span>
+                    <span>🚀</span>
+                  </div>
+                  <div>🔖</div>
+                </div>
+
+                <div style="padding:0 14px 10px; font-size:0.8rem;">
+                  <strong>growth_automation</strong> Test our comment-to-DM lead funnel right now live 👇
+                </div>
+
+                <div class="ig-comments-feed" id="commentsList">
+                  <div class="comment-row">
+                    <div><span class="comment-user">@sarah_growth</span> <span>Is this bot built with free tools?</span></div>
+                  </div>
+                  <div class="comment-row">
+                    <div><span class="comment-user">@saas_founder</span> <span>Testing the lead qualification flow!</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="chat-footer">
+              <div class="quick-chips-row">
+                <span style="font-size:0.7rem; color:var(--text-muted); align-self:center;">Quick test:</span>
+                <button type="button" class="chip-btn comment-quick-trigger" data-text="GUIDE">"GUIDE"</button>
+                <button type="button" class="chip-btn comment-quick-trigger" data-text="giude">"giude" (typo)</button>
+                <button type="button" class="chip-btn comment-quick-trigger" data-text="PRICE">"PRICE"</button>
+                <button type="button" class="chip-btn comment-quick-trigger" data-text="LINK">"LINK"</button>
+              </div>
+              <form class="input-group-row" id="commentForm">
+                <input
+                  type="text"
+                  id="commentInput"
+                  class="clean-input"
+                  placeholder="Comment (e.g. GUIDE)..."
+                  autocomplete="off"
+                  required
+                />
+                <button type="submit" class="btn-send">Post</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Col 2: Direct Messages (DM) -->
+          <div class="column-card">
+            <div class="column-card-header">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <div class="ig-avatar-ring" style="width:26px; height:26px;">
+                  <div class="ig-avatar-core" style="font-size:11px;">⚡</div>
+                </div>
+                <div>
+                  <h3 style="font-size:0.875rem;">growth_automation</h3>
+                  <div style="font-size:0.675rem; color:#16a34a;">● Active now • Bot Automated</div>
+                </div>
+              </div>
+              <span class="badge-subtle">Direct Messages</span>
+            </div>
+
+            <div class="dm-body-scroll" id="dmContainer">
+              <div class="bubble bubble-in">
+                👋 Hey there! Comment <strong>GUIDE</strong>, <strong>PRICE</strong>, or <strong>LINK</strong> on our post, or ask any question here directly.
+              </div>
+            </div>
+
+            <div class="chat-footer">
+              <div class="quick-chips-row">
+                <span style="font-size:0.7rem; color:var(--text-muted); align-self:center;">Edge cases:</span>
+                <button type="button" class="chip-btn dm-quick-trigger" data-text="Where are you located?">Where are you located? (FAQ)</button>
+                <button type="button" class="chip-btn dm-quick-trigger" data-text="human">"human" (Takeover)</button>
+                <button type="button" class="chip-btn dm-quick-trigger" data-text="STOP">"STOP" (Opt-out)</button>
+              </div>
+              <form class="input-group-row" id="dmForm">
+                <input
+                  type="text"
+                  id="dmInput"
+                  class="clean-input"
+                  placeholder="Send a DM message..."
+                  autocomplete="off"
+                  required
+                />
+                <button type="submit" class="btn-send" style="background:#0284c7;">Send</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Col 3: Engine Inspector (Live Telemetry) -->
+          <div class="column-card">
+            <div class="column-card-header">
+              <h3>⚙️ Engine Inspector</h3>
+              <span class="badge-subtle" style="background:var(--brand-green-soft); color:var(--brand-green-dark); font-weight:700;">Live Telemetry</span>
+            </div>
+
+            <div class="telemetry-scroll">
+              <!-- Widget 1: Keyword Trigger -->
+              <div class="stat-widget">
+                <div class="stat-widget-title">
+                  <span>1. Keyword Trigger</span>
+                  <span class="tier-pill cold" style="font-size:0.65rem;">RapidFuzz</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-key">Rule Fired:</span>
+                  <span class="info-value" id="matchedRule">None</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-key">Keyword:</span>
+                  <span class="info-value" id="matchedKeyword">None</span>
+                </div>
+              </div>
+
+              <!-- Widget 2: FAQ TF-IDF Match -->
+              <div class="stat-widget">
+                <div class="stat-widget-title">
+                  <span>2. FAQ Cosine Matcher</span>
+                  <span id="faqConfidenceBadge" class="tier-pill" style="font-size:0.65rem;">IDLE</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-key">Closest FAQ:</span>
+                  <span class="info-value" id="faqQuestion" style="font-size:0.75rem;">None</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-key">Cosine Score:</span>
+                  <span class="info-value" id="faqScore">0.00</span>
+                </div>
+              </div>
+
+              <!-- Widget 3: Funnel State Machine -->
+              <div class="stat-widget">
+                <div class="stat-widget-title">
+                  <span>3. State Machine Flow</span>
+                  <span class="tier-pill warm" style="font-size:0.65rem;">Step Logic</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-key">Current Step:</span>
+                  <span class="info-value" id="flowStep">Idle</span>
+                </div>
+              </div>
+
+              <!-- Widget 4: Lead Scoring & Tier -->
+              <div class="stat-widget">
+                <div class="stat-widget-title">
+                  <span>4. Lead Scoring & Tier</span>
+                  <span id="leadTier" class="tier-pill">None</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-key">Accumulated Score:</span>
+                  <span class="info-value" id="leadScore">0 pts</span>
+                </div>
+                <div class="progress-track">
+                  <div class="progress-fill" id="scoreBar"></div>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:0.65rem; color:var(--text-muted); margin-top:4px;">
+                  <span>Cold (&lt;40)</span>
+                  <span>Warm (40-69)</span>
+                  <span>Hot (70+)</span>
+                </div>
+              </div>
+
+              <!-- Widget 5: Decision Trace Stream -->
+              <div class="stat-widget" style="flex:1; display:flex; flex-direction:column;">
+                <div class="stat-widget-title">
+                  <span>5. Decision Trace Stream</span>
+                  <span style="font-size:0.65rem; color:var(--text-muted);">Real-time</span>
+                </div>
+                <div class="terminal-log" id="consoleLogs">
+                  <div>[00:00:00] Engine telemetry initialized.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ==============================================================
+           TAB 2: ANALYTICS DASHBOARD (PHASE 4)
+           ============================================================== -->
+      <section class="view-panel" id="panel-analytics">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div>
+              <h2>📊 Funnel Performance & Conversions</h2>
+              <p style="font-size:0.8rem; color:var(--text-muted);">Real-time conversion metrics across comment triggers, DMs, and lead tiers.</p>
+            </div>
+            <button class="btn-header" id="refreshAnalyticsBtn">🔄 Refresh Data</button>
+          </div>
+
+          <!-- KPI Cards -->
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <span class="kpi-label">Comments Triggered</span>
+              <span class="kpi-number" id="kpiComments">0</span>
+              <span class="kpi-trend">💬 Inbound public triggers</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-label">DMs Dispatched</span>
+              <span class="kpi-number" id="kpiDMs">0</span>
+              <span class="kpi-trend">📩 Direct messages sent</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-label">Total Leads Captured</span>
+              <span class="kpi-number" id="kpiLeads">0</span>
+              <span class="kpi-trend">🎯 Qualified contacts</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-label">Completion Rate</span>
+              <span class="kpi-number" id="kpiCompletion">0%</span>
+              <span class="kpi-trend">⚡ Funnel step-through</span>
+            </div>
+          </div>
+
+          <!-- Chart.js Visualization Grid -->
+          <div class="charts-grid">
+            <div class="chart-container">
+              <h4>🎯 Leads by Qualification Tier (HOT / WARM / COLD)</h4>
+              <div class="chart-wrapper">
+                <canvas id="leadsTierChart"></canvas>
+              </div>
+            </div>
+            <div class="chart-container">
+              <h4>📉 Step-by-Step Funnel Drop-off</h4>
+              <div class="chart-wrapper">
+                <canvas id="dropoffChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==============================================================
+           TAB 3: RULES MANAGER (PHASE 4)
+           ============================================================== -->
+      <section class="view-panel" id="panel-rules">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div>
+              <h2>⚡ Comment Keyword Trigger Rules</h2>
+              <p style="font-size:0.8rem; color:var(--text-muted);">Configure keywords, match modes, cooldown windows, and randomized reply templates.</p>
+            </div>
+            <button class="btn-header" id="addRuleBtn" style="background:var(--brand-green); color:white; border:none;">
+              + New Rule
+            </button>
+          </div>
+
+          <div class="data-table-container">
+            <table class="clean-table" id="rulesTable">
+              <thead>
+                <tr>
+                  <th>Rule Name</th>
+                  <th>Keywords</th>
+                  <th>Match Mode</th>
+                  <th>Cooldown</th>
+                  <th>Templates</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="rulesTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==============================================================
+           TAB 4: FAQ KNOWLEDGE BASE (PHASE 4)
+           ============================================================== -->
+      <section class="view-panel" id="panel-faqs">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div>
+              <h2>💬 FAQ Knowledge Base (TF-IDF Similarity)</h2>
+              <p style="font-size:0.8rem; color:var(--text-muted);">Manage question variants and answers. Vectorizer re-fits automatically on edits.</p>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button class="btn-header" id="testFAQBtn">🧪 Test Query</button>
+              <button class="btn-header" id="addFAQBtn" style="background:var(--brand-green); color:white; border:none;">+ New FAQ</button>
+            </div>
+          </div>
+
+          <div class="data-table-container">
+            <table class="clean-table" id="faqsTable">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Primary Question</th>
+                  <th>Question Variants</th>
+                  <th>Answer</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="faqsTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==============================================================
+           TAB 5: FLOW EDITOR (PHASE 4)
+           ============================================================== -->
+      <section class="view-panel" id="panel-flows">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div>
+              <h2>🔀 Qualification Flow Editor (JSON Configuration)</h2>
+              <p style="font-size:0.8rem; color:var(--text-muted);">Edit flow steps, choices, scoring points, email regex validation, and tailored closing messages.</p>
+            </div>
+            <button class="btn-header" id="saveFlowBtn" style="background:var(--brand-green); color:white; border:none;">
+              💾 Save Flow
+            </button>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+            <div>
+              <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:6px;">Flow JSON Definition</label>
+              <textarea
+                id="flowJsonEditor"
+                style="width:100%; height:450px; font-family:var(--font-mono); font-size:0.775rem; padding:14px; border:1px solid var(--border-light); border-radius:12px; background:var(--surface-subtle); outline:none;"
+                spellcheck="false"
+              ></textarea>
             </div>
             <div>
-              <span class="ig-username">growth_automation</span>
-              <span class="ig-verified">●</span>
-              <div style="font-size:0.7rem; color:#94a3b8;">Sponsored • Creator Automation</div>
-            </div>
-          </div>
-
-          <!-- Post Media Card -->
-          <div class="ig-post-media">
-            <span class="ig-media-badge">Free Automation Blueprint</span>
-            <h3>How We Automated 10,000+ Lead DMs with $0 APIs</h3>
-            <p>Comment <strong>"GUIDE"</strong> below for our full architecture & instant funnel access!</p>
-          </div>
-
-          <!-- Action Icons -->
-          <div class="ig-actions-row">
-            <div class="ig-actions-left">
-              <span>❤️</span>
-              <span>💬</span>
-              <span>🚀</span>
-            </div>
-            <div>🔖</div>
-          </div>
-
-          <!-- Post Caption -->
-          <div class="ig-caption">
-            <span>growth_automation</span> Stop answering DMs manually. Test our open-source funnel engine right here in real-time! 👇
-          </div>
-
-          <!-- Comments Feed -->
-          <div class="ig-comments-list" id="commentsList">
-            <div class="comment-item">
-              <div><span class="comment-author">@sarah_marketer</span> <span class="comment-text">Is this automation built with free tools?</span></div>
-            </div>
-            <div class="comment-item">
-              <div><span class="comment-author">@growth_agency</span> <span class="comment-text">Looking forward to testing the qualification flow!</span></div>
-            </div>
-          </div>
-        </article>
-      </div>
-
-      <!-- Comment Input Box -->
-      <div class="comment-input-box">
-        <div class="quick-triggers">
-          <span style="font-size:0.7rem; color:#6b7280; margin-right:4px;">Quick test:</span>
-          <button type="button" class="trigger-chip comment-quick-trigger" data-text="GUIDE">"GUIDE"</button>
-          <button type="button" class="trigger-chip comment-quick-trigger" data-text="giude">"giude" (typo)</button>
-          <button type="button" class="trigger-chip comment-quick-trigger" data-text="What is your pricing?">"PRICE"</button>
-          <button type="button" class="trigger-chip comment-quick-trigger" data-text="LINK">"LINK"</button>
-        </div>
-        <form class="input-form-row" id="commentForm">
-          <input
-            type="text"
-            id="commentInput"
-            class="input-text"
-            placeholder="Add a comment... (e.g. GUIDE)"
-            autocomplete="off"
-            required
-          />
-          <button type="submit" class="btn" style="background:#0095f6; color:#fff;">Post</button>
-        </form>
-      </div>
-    </section>
-
-    <!-- Column 2: Simulated Instagram DM Chat -->
-    <section class="column-card" aria-label="Direct Message Inbox Simulator">
-      <div class="column-header">
-        <div class="dm-header-info">
-          <div class="ig-avatar" style="width:28px; height:28px;">
-            <div class="ig-avatar-inner" style="font-size:12px;">⚡</div>
-          </div>
-          <div>
-            <h2 style="font-size:0.9rem;">growth_automation</h2>
-            <div class="dm-active-status">● Active now • Bot Automated</div>
-          </div>
-        </div>
-        <span class="header-tag">Direct Messages</span>
-      </div>
-
-      <!-- Messages Thread -->
-      <div class="dm-messages-container" id="dmContainer">
-        <div class="dm-bubble dm-bubble-in">
-          👋 Hey there! Comment on our post with <strong>GUIDE</strong>, <strong>PRICE</strong>, or <strong>LINK</strong> to start the live funnel, or ask any question here directly.
-        </div>
-      </div>
-
-      <!-- DM Input Box -->
-      <div class="comment-input-box">
-        <div class="quick-triggers">
-          <span style="font-size:0.7rem; color:#6b7280; margin-right:4px;">Test edge cases:</span>
-          <button type="button" class="trigger-chip dm-quick-trigger" data-text="Where are you located?">Where are you located? (FAQ Interruption)</button>
-          <button type="button" class="trigger-chip dm-quick-trigger" data-text="human">"human" (Takeover)</button>
-          <button type="button" class="trigger-chip dm-quick-trigger" data-text="STOP">"STOP" (Opt-out)</button>
-        </div>
-        <form class="input-form-row" id="dmForm">
-          <input
-            type="text"
-            id="dmInput"
-            class="input-text"
-            placeholder="Send message..."
-            autocomplete="off"
-            required
-          />
-          <button type="submit" class="btn" style="background:#3797f0; color:#fff;">Send</button>
-        </form>
-      </div>
-    </section>
-
-    <!-- Column 3: Live Engine Inspector (The Recruiter Wow Factor) -->
-    <section class="column-card" aria-label="Live Engine Telemetry Inspector">
-      <div class="column-header">
-        <h2>⚙️ Engine Inspector</h2>
-        <span class="header-tag" style="background:rgba(99,102,241,0.2); color:#a5b4fc;">Live Telemetry</span>
-      </div>
-
-      <div class="inspector-scroll-area">
-        <!-- Rule Match Telemetry -->
-        <div class="telemetry-card">
-          <div class="telemetry-title">
-            <span>1. Keyword Trigger Engine</span>
-            <span class="badge-pill" style="font-size:0.6rem;">RapidFuzz</span>
-          </div>
-          <div class="metric-row">
-            <span class="metric-label">Matched Rule:</span>
-            <span class="metric-val" id="matchedRule">None</span>
-          </div>
-          <div class="metric-row">
-            <span class="metric-label">Keyword Fired:</span>
-            <span class="metric-val" id="matchedKeyword">None</span>
-          </div>
-        </div>
-
-        <!-- FAQ TF-IDF Telemetry -->
-        <div class="telemetry-card">
-          <div class="telemetry-title">
-            <span>2. FAQ Cosine Matcher</span>
-            <span id="faqConfidenceBadge" class="tier-badge" style="font-size:0.65rem;">IDLE</span>
-          </div>
-          <div class="metric-row">
-            <span class="metric-label">Matched Query:</span>
-            <span class="metric-val" id="faqQuestion" style="font-size:0.75rem;">None</span>
-          </div>
-          <div class="metric-row">
-            <span class="metric-label">TF-IDF Similarity:</span>
-            <span class="metric-val" id="faqScore">0.00</span>
-          </div>
-        </div>
-
-        <!-- Funnel State Machine Telemetry -->
-        <div class="telemetry-card">
-          <div class="telemetry-title">
-            <span>3. Qualification Flow</span>
-            <span class="badge-pill" style="font-size:0.6rem;">State Machine</span>
-          </div>
-          <div class="metric-row">
-            <span class="metric-label">Current Step:</span>
-            <span class="metric-val" id="flowStep">Idle</span>
-          </div>
-        </div>
-
-        <!-- Lead Scoring & Tier -->
-        <div class="telemetry-card">
-          <div class="telemetry-title">
-            <span>4. Lead Scoring & Tier</span>
-            <span id="leadTier" class="tier-badge">None</span>
-          </div>
-          <div class="metric-row">
-            <span class="metric-label">Accumulated Score:</span>
-            <span class="metric-val" id="leadScore">0 pts</span>
-          </div>
-          <div class="score-progress">
-            <div class="score-bar" id="scoreBar"></div>
-          </div>
-          <div style="display:flex; justify-content:space-between; font-size:0.65rem; color:#6b7280; margin-top:4px;">
-            <span>Cold (&lt;40)</span>
-            <span>Warm (40-69)</span>
-            <span>Hot (70+)</span>
-          </div>
-        </div>
-
-        <!-- Real-Time Console Log -->
-        <div class="telemetry-card" style="flex:1; display:flex; flex-direction:column;">
-          <div class="telemetry-title">
-            <span>5. Decision Trace Stream</span>
-            <span style="font-size:0.65rem; color:#6b7280;">Real-time</span>
-          </div>
-          <div class="inspector-console" id="consoleLogs">
-            <div class="console-entry">
-              <span class="console-time">[00:00:00]</span> FunnelBot engine telemetry initialized.
+              <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:6px;">Step Preview & Validation</label>
+              <div id="flowPreviewBox" style="background:var(--surface-white); border:1px solid var(--border-light); border-radius:12px; padding:16px; height:450px; overflow-y:auto; font-size:0.825rem;">
+                <p style="color:var(--text-muted);">Load a flow to inspect rendered step walkthrough.</p>
+              </div>
             </div>
           </div>
         </div>
+      </section>
+
+      <!-- ==============================================================
+           TAB 6: LEADS TABLE & CSV EXPORT (PHASE 4)
+           ============================================================== -->
+      <section class="view-panel" id="panel-leads">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div>
+              <h2>👥 Captured Leads CRM</h2>
+              <p style="font-size:0.8rem; color:var(--text-muted);">Review qualified leads, filter by score tier, and export to CSV.</p>
+            </div>
+            <div style="display:flex; gap:10px;">
+              <select id="leadTierFilter" class="clean-input" style="padding:6px 12px; font-size:0.8rem; width:140px;">
+                <option value="">All Tiers</option>
+                <option value="HOT">HOT 🔥</option>
+                <option value="WARM">WARM ⚡</option>
+                <option value="COLD">COLD 🌱</option>
+              </select>
+              <a href="/api/admin/leads/export" download class="btn-header" style="background:var(--surface-white); text-decoration:none;">
+                📥 Export CSV
+              </a>
+            </div>
+          </div>
+
+          <div class="data-table-container">
+            <table class="clean-table" id="leadsTable">
+              <thead>
+                <tr>
+                  <th>User / Username</th>
+                  <th>Email</th>
+                  <th>Score</th>
+                  <th>Tier</th>
+                  <th>Channel</th>
+                  <th>Answers Summary</th>
+                  <th>Captured At</th>
+                </tr>
+              </thead>
+              <tbody id="leadsTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==============================================================
+           TAB 7: AUDIT LOGS (PHASE 4)
+           ============================================================== -->
+      <section class="view-panel" id="panel-logs">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div>
+              <h2>📜 Real-Time Conversation & Telemetry Audit Log</h2>
+              <p style="font-size:0.8rem; color:var(--text-muted);">Inspection trail of every comment, DM, rule match, and action dispatched.</p>
+            </div>
+            <button class="btn-header" id="refreshLogsBtn">🔄 Refresh Logs</button>
+          </div>
+
+          <div class="data-table-container">
+            <table class="clean-table" id="auditTable">
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Event</th>
+                  <th>User</th>
+                  <th>Inbound Text</th>
+                  <th>Actions Output</th>
+                  <th>Engine Inspector Summary</th>
+                </tr>
+              </thead>
+              <tbody id="auditTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Modal 1: Add/Edit Rule -->
+  <div class="modal-overlay" id="ruleModal">
+    <div class="modal-box">
+      <div class="modal-title">
+        <span id="ruleModalTitle">New Keyword Trigger Rule</span>
+        <button type="button" class="btn-header" style="padding:2px 8px;" onclick="document.getElementById('ruleModal').classList.remove('open')">✕</button>
       </div>
-    </section>
+      <form id="ruleForm">
+        <div class="form-group">
+          <label>Rule ID</label>
+          <input type="text" id="ruleIdInput" class="clean-input" required placeholder="e.g. rule_promo">
+        </div>
+        <div class="form-group">
+          <label>Rule Name</label>
+          <input type="text" id="ruleNameInput" class="clean-input" required placeholder="e.g. Promo Offer">
+        </div>
+        <div class="form-group">
+          <label>Keywords (comma-separated)</label>
+          <input type="text" id="ruleKeywordsInput" class="clean-input" required placeholder="promo, discount, sale">
+        </div>
+        <div class="form-group">
+          <label>Match Mode</label>
+          <select id="ruleMatchModeInput" class="clean-input">
+            <option value="fuzzy">Fuzzy (RapidFuzz with Threshold)</option>
+            <option value="contains">Contains (Word Boundary)</option>
+            <option value="exact">Exact Match</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Fuzzy Threshold (0 - 100)</label>
+          <input type="number" id="ruleThresholdInput" class="clean-input" value="80" min="50" max="100">
+        </div>
+        <div class="form-group">
+          <label>Cooldown Window (Seconds)</label>
+          <input type="number" id="ruleCooldownInput" class="clean-input" value="3600">
+        </div>
+        <div class="form-group">
+          <label>Public Reply Templates (one per line, use @{username})</label>
+          <textarea id="ruleTemplatesInput" class="clean-input" rows="3" placeholder="Thanks @{username}! Check your DMs 🚀"></textarea>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
+          <button type="button" class="btn-header" onclick="document.getElementById('ruleModal').classList.remove('open')">Cancel</button>
+          <button type="submit" class="btn-header" style="background:var(--brand-green); color:white; border:none;">Save Rule</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-  </main>
+  <!-- Modal 2: Add/Edit FAQ -->
+  <div class="modal-overlay" id="faqModal">
+    <div class="modal-box">
+      <div class="modal-title">
+        <span id="faqModalTitle">New FAQ Knowledge Entry</span>
+        <button type="button" class="btn-header" style="padding:2px 8px;" onclick="document.getElementById('faqModal').classList.remove('open')">✕</button>
+      </div>
+      <form id="faqForm">
+        <div class="form-group">
+          <label>FAQ ID</label>
+          <input type="text" id="faqIdInput" class="clean-input" required placeholder="e.g. faq_support_hours">
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <input type="text" id="faqCategoryInput" class="clean-input" value="General">
+        </div>
+        <div class="form-group">
+          <label>Primary Question</label>
+          <input type="text" id="faqQuestionInput" class="clean-input" required placeholder="What are your hours?">
+        </div>
+        <div class="form-group">
+          <label>Question Variants (one per line)</label>
+          <textarea id="faqVariantsInput" class="clean-input" rows="3" placeholder="When are you open?&#10;Working hours"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Answer Message</label>
+          <textarea id="faqAnswerInput" class="clean-input" rows="3" required placeholder="We are available 24/7 via automated funnels."></textarea>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
+          <button type="button" class="btn-header" onclick="document.getElementById('faqModal').classList.remove('open')">Cancel</button>
+          <button type="submit" class="btn-header" style="background:var(--brand-green); color:white; border:none;">Save FAQ</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-  <!-- Toast Notification Container -->
-  <div class="toast-container" id="toastContainer"></div>
+  <!-- Modal 3: Set Admin Password -->
+  <div class="modal-overlay" id="authModal">
+    <div class="modal-box">
+      <div class="modal-title">
+        <span>Admin Authentication</span>
+        <button type="button" class="btn-header" style="padding:2px 8px;" onclick="document.getElementById('authModal').classList.remove('open')">✕</button>
+      </div>
+      <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">
+        The public demo is in read-only mode by default. Enter the admin password to enable saving or modifying rules, FAQs, and flows.
+      </p>
+      <form id="authForm">
+        <div class="form-group">
+          <label>Admin Password</label>
+          <input type="password" id="adminPasswordInput" class="clean-input" placeholder="e.g. demo-funnel-pass-2026" required>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
+          <button type="button" class="btn-header" onclick="document.getElementById('authModal').classList.remove('open')">Close</button>
+          <button type="submit" class="btn-header" style="background:var(--brand-green); color:white; border:none;">Unlock Admin</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-  <!-- Client Script -->
+  <!-- Toast Shelf -->
+  <div class="toast-shelf" id="toastShelf"></div>
+
+  <!-- Client Application Controller -->
   <script src="/app.js"></script>
 </body>
 </html>
