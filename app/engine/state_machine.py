@@ -1,10 +1,12 @@
 """State machine for lead qualification flows, interruptions, and global commands."""
 import re
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 from rapidfuzz import fuzz
 
 from app.engine.storage import Storage
+
+UTC = timezone.utc
 from app.models.events import ActionType, Channel, EngineAction
 from app.models.flow import (
     ConversationState,

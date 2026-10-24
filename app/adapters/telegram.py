@@ -1,11 +1,13 @@
 """Telegram Channel Adapter using direct webhook & HTTP client."""
 import logging
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from typing import Any
 
 import httpx
 
 from app.adapters.base import ChannelAdapter
+
+UTC = timezone.utc
 from app.config import settings
 from app.models.events import (
     ActionType,

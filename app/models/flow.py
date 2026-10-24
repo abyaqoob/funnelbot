@@ -1,9 +1,11 @@
 """Lead qualification flow and state machine models."""
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Any
 
 from pydantic import BaseModel, Field
+
+UTC = timezone.utc
 
 
 class LeadTier(str, Enum):

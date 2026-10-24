@@ -1,7 +1,9 @@
 """Tests for StateMachine (choices, regex email validation, scoring, tiers, and 24h expiration)."""
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import pytest
+
+UTC = timezone.utc
 
 from app.engine.state_machine import StateMachine
 from app.engine.storage import InMemoryStorage

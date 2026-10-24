@@ -1,10 +1,12 @@
 """SQLModel database table definitions for persistent storage."""
 import json
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 from sqlmodel import Field, SQLModel
 
 from app.models.faq import FAQItem
+
+UTC = timezone.utc
 from app.models.flow import (
     ConversationState,
     ConversationStatus,

@@ -1,11 +1,13 @@
 """SQLModel database implementation of the Storage interface."""
 import json
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from typing import Any
 
 from sqlmodel import Session, desc, select
 
 from app.engine.storage import Storage
+
+UTC = timezone.utc
 from app.models.db_models import (
     ConversationLogDB,
     ConversationStateDB,

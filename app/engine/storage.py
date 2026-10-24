@@ -1,5 +1,5 @@
 """Storage layer interface and in-memory implementation."""
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from typing import Any
 
 from app.models.events import EngineAction, InspectorInfo, NormalizedEvent
@@ -7,6 +7,8 @@ from app.models.faq import FAQItem
 from app.models.flow import ConversationState, QualificationFlow
 from app.models.leads import Lead
 from app.models.rules import TriggerRule
+
+UTC = timezone.utc
 
 
 class Storage:

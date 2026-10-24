@@ -1,6 +1,6 @@
 [tool.ruff]
 line-length = 100
-target-version = "py311"
+target-version = "py310"
 
 [tool.ruff.lint]
 select = [
@@ -13,7 +13,9 @@ select = [
 ]
 ignore = [
     "B008",  # Do not perform function call `Depends` in argument defaults (standard FastAPI idiom)
+    "E402",  # Module level import not at top of file (allow UTC = timezone.utc compatibility)
     "E501",  # Line length (handled by formatter)
+    "UP017", # Use datetime.UTC alias (avoid breaking Python 3.10)
     "UP042", # Class inherits from both `str` and `enum.Enum` (backward-compatible enum pattern)
 ]
 

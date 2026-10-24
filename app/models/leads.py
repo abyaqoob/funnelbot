@@ -1,10 +1,12 @@
 """Lead models for captured qualified contacts."""
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from typing import Any
 
 from pydantic import BaseModel, Field
 
 from app.models.flow import LeadTier
+
+UTC = timezone.utc
 
 
 class Lead(BaseModel):

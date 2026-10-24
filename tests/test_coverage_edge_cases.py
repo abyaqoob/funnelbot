@@ -1,6 +1,8 @@
 """Additional tests targeting uncovered edge cases to maximize engine test coverage."""
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from unittest.mock import MagicMock
+
+UTC = timezone.utc
 
 from app.engine.funnel_engine import FunnelEngine
 from app.engine.llm_fallback import LLMProvider

@@ -1,6 +1,6 @@
 """Simulator endpoints for recruiter interactive demo."""
 import html
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, Header, HTTPException, status
 from pydantic import BaseModel, Field
@@ -8,6 +8,8 @@ from pydantic import BaseModel, Field
 from app.api.deps import get_db_storage, get_funnel_engine
 from app.config import settings
 from app.engine.funnel_engine import FunnelEngine
+
+UTC = timezone.utc
 from app.engine.storage import Storage
 from app.models.events import Channel, EngineResult, EventType, NormalizedEvent
 

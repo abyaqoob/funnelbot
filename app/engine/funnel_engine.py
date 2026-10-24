@@ -1,8 +1,10 @@
 """Master Funnel Engine coordinating Keyword Triggers, FAQ Matcher, State Machine, and LLM fallback."""
 import random
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 from app.engine.faq_matcher import FAQMatcher
+
+UTC = timezone.utc
 from app.engine.keyword_matcher import KeywordMatcher
 from app.engine.llm_fallback import LLMProvider, get_llm_provider
 from app.engine.state_machine import StateMachine

@@ -1,11 +1,13 @@
 """Health and diagnostic endpoint."""
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends
 from sqlmodel import Session, text
 
 from app.config import settings
 from app.database import get_session
+
+UTC = timezone.utc
 
 router = APIRouter(tags=["Health"])
 
