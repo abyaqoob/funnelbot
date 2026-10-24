@@ -11,6 +11,7 @@ router = APIRouter(tags=["Health"])
 
 
 @router.get("/health")
+@router.get("/healthz")
 def health_check(session: Session = Depends(get_session)):
     """System health check and database connectivity probe."""
     db_status = "connected"
