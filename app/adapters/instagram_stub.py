@@ -25,16 +25,28 @@ class InstagramStubAdapter(ChannelAdapter):
         verify_token: Optional[str] = None,
         page_id: Optional[str] = None,
     ):
-        self.access_token = access_token or settings.INSTAGRAM_ACCESS_TOKEN
-        self.verify_token = verify_token or settings.INSTAGRAM_VERIFY_TOKEN
-        self.page_id = page_id or settings.INSTAGRAM_PAGE_ID
+        self._access_token = access_token
+        self._verify_token = verify_token
+        self._page_id = page_id
+
+    @property
+    def verify_token(self) -> str:
+        return self._verify_token or settings.INSTAGRAM_VERIFY_TOKEN
+
+    @property
+    def access_token(self) -> Optional[str]:
+        return self._access_token or settings.INSTAGRAM_ACCESS_TOKEN
+
+    @property
+    def page_id(self) -> Optional[str]:
+        return self._page_id or settings.INSTAGRAM_PAGE_ID
 
     def verify_webhook(self, mode: Optional[str], token: Optional[str], challenge: Optional[str]) -> Optional[str]:
         """
         Handles Meta webhook verification handshake (GET hub.challenge).
         Returns challenge string if verified, or None.
         """
-        expected_token = self.verify_token or settings.INSTAGRAM_VERIFY_TOKEN
+        expected_token = self.verify_token
         if mode == "subscribe" and token and expected_token and token == expected_token:
             logger.info("Instagram webhook handshake verified successfully.")
             return challenge

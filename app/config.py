@@ -36,7 +36,7 @@ class Settings:
     TELEGRAM_WEBHOOK_SECRET: Optional[str] = os.getenv("TELEGRAM_WEBHOOK_SECRET")
     INSTAGRAM_PAGE_ID: Optional[str] = os.getenv("INSTAGRAM_PAGE_ID")
     INSTAGRAM_ACCESS_TOKEN: Optional[str] = os.getenv("INSTAGRAM_ACCESS_TOKEN")
-    INSTAGRAM_VERIFY_TOKEN: Optional[str] = os.getenv("INSTAGRAM_VERIFY_TOKEN")
+    INSTAGRAM_VERIFY_TOKEN: str = os.getenv("INSTAGRAM_VERIFY_TOKEN", "meta_dev_secret")
 
 
 settings = Settings()
