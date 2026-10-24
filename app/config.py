@@ -17,8 +17,9 @@ class Settings:
     HOST: str = os.getenv("HOST", "0.0.0.0")
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
 
-    # Database
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./funnelbot.db")
+    # Database (auto-fallback to writable /tmp on serverless environments like Vercel)
+    _default_db: str = "sqlite:////tmp/funnelbot.db" if os.getenv("VERCEL") else "sqlite:///./funnelbot.db"
+    DATABASE_URL: str = os.getenv("DATABASE_URL", _default_db)
 
     # Admin & Security
     ADMIN_PASSWORD: str = os.getenv("ADMIN_PASSWORD", "demo-funnel-pass-2026")
