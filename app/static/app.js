@@ -251,6 +251,9 @@ class FunnelApp {
       this.pageSubtitle.textContent = titles[tabName][1];
     }
 
+    // Scroll to top of newly selected view
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
     // Lazy load data for selected tab
     if (tabName === "analytics") this.loadAnalytics();
     else if (tabName === "rules") this.loadRules();

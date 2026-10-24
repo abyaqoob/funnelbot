@@ -441,18 +441,18 @@
             </button>
           </div>
 
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+          <div class="flow-editor-grid">
             <div>
               <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:6px;">Flow JSON Definition</label>
               <textarea
                 id="flowJsonEditor"
-                style="width:100%; height:450px; font-family:var(--font-mono); font-size:0.775rem; padding:14px; border:1px solid var(--border-light); border-radius:12px; background:var(--surface-subtle); outline:none;"
+                class="flow-editor-textarea"
                 spellcheck="false"
               ></textarea>
             </div>
             <div>
               <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:6px;">Step Preview & Validation</label>
-              <div id="flowPreviewBox" style="background:var(--surface-white); border:1px solid var(--border-light); border-radius:12px; padding:16px; height:450px; overflow-y:auto; font-size:0.825rem;">
+              <div id="flowPreviewBox" class="flow-preview-box">
                 <p style="color:var(--text-muted);">Load a flow to inspect rendered step walkthrough.</p>
               </div>
             </div>
