@@ -5,6 +5,7 @@ from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
@@ -67,8 +68,19 @@ app.include_router(simulator.router)
 app.include_router(admin.router)
 app.include_router(webhooks.router)
 
-# Mount static files for the single-page demo UI
+# Static files and root route for the single-page demo UI
 STATIC_DIR = Path(__file__).parent / "static"
+
+
+@app.get("/", include_in_schema=False)
+async def serve_root():
+    """Explicit root route serving the single-page demo UI."""
+    index_file = STATIC_DIR / "index.html"
+    if index_file.exists():
+        return FileResponse(index_file)
+    return {"service": "FunnelBot", "status": "online"}
+
+
 if STATIC_DIR.exists():
     app.mount("/", StaticFiles(directory=STATIC_DIR, html=True), name="static")
 
