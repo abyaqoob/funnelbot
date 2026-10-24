@@ -1,0 +1,315 @@
+{
+  "rules": [
+    {
+      "id": "rule_guide",
+      "name": "Free Guide Automation",
+      "keywords": ["guide", "free guide", "blueprint", "checklist"],
+      "match_mode": "fuzzy",
+      "fuzzy_threshold": 80.0,
+      "post_id_scope": null,
+      "cooldown_seconds": 3600,
+      "reply_templates": [
+        "Thanks @{username}! Just sent the guide to your DMs 🚀",
+        "Hey @{username}, check your inbox for the blueprint! 📩",
+        "Sent @{username}! Let me know what you think of it ✨"
+      ],
+      "flow_id": "lead_qualification",
+      "is_active": true
+    },
+    {
+      "id": "rule_price",
+      "name": "Pricing & Packages Trigger",
+      "keywords": ["price", "pricing", "cost", "how much", "rate"],
+      "match_mode": "contains",
+      "fuzzy_threshold": 80.0,
+      "post_id_scope": null,
+      "cooldown_seconds": 1800,
+      "reply_templates": [
+        "Hey @{username}! Dropped our pricing breakdown in your DMs 💰",
+        "Sent you our package rates @{username}! Check your inbox 📩"
+      ],
+      "flow_id": "lead_qualification",
+      "is_active": true
+    },
+    {
+      "id": "rule_link",
+      "name": "Direct Link / Demo",
+      "keywords": ["link", "demo", "access"],
+      "match_mode": "exact",
+      "fuzzy_threshold": 85.0,
+      "post_id_scope": null,
+      "cooldown_seconds": 3600,
+      "reply_templates": [
+        "Check your messages @{username}, link is on its way! 🔗",
+        "Sent the access link to your DMs @{username}! ⚡"
+      ],
+      "flow_id": "lead_qualification",
+      "is_active": true
+    }
+  ],
+  "faqs": [
+    {
+      "id": "faq_pricing",
+      "category": "Pricing",
+      "question": "How much does your service cost?",
+      "question_variants": [
+        "What are your prices?",
+        "What is the cost?",
+        "How much do you charge?",
+        "Pricing packages"
+      ],
+      "answer": "Our automation packages start at $499/month for starter funnels and $1,499/month for full multi-channel setups. We also offer custom enterprise builds."
+    },
+    {
+      "id": "faq_free_trial",
+      "category": "Pricing",
+      "question": "Do you offer a free trial?",
+      "question_variants": [
+        "Can I try for free?",
+        "Is there a demo or trial?",
+        "Do you have a free tier?"
+      ],
+      "answer": "Yes! You can test our interactive demo simulator right now with zero signup. We also offer a 14-day risk-free pilot."
+    },
+    {
+      "id": "faq_setup_time",
+      "category": "Onboarding",
+      "question": "How long does setup take?",
+      "question_variants": [
+        "What is the onboarding time?",
+        "When can we launch?",
+        "How fast can this be deployed?"
+      ],
+      "answer": "Most funnels are fully configured and deployed within 48 to 72 hours of our initial strategy call."
+    },
+    {
+      "id": "faq_platforms",
+      "category": "Integrations",
+      "question": "What platforms do you support?",
+      "question_variants": [
+        "Does this work on Instagram?",
+        "Can I connect Telegram?",
+        "What social channels work?"
+      ],
+      "answer": "We support Instagram comments & DMs, Telegram bots, and custom web chat. WhatsApp support is coming soon."
+    },
+    {
+      "id": "faq_crm",
+      "category": "Integrations",
+      "question": "Does this integrate with my CRM?",
+      "question_variants": [
+        "Can leads sync to HubSpot?",
+        "Do you connect to Notion or Airtable?",
+        "Can you send leads to webhook or Zapier?"
+      ],
+      "answer": "Yes! Leads can be dispatched in real-time via Webhook to HubSpot, Zapier, Make, Notion, Airtable, or Google Sheets."
+    },
+    {
+      "id": "faq_refund",
+      "category": "Policy",
+      "question": "What is your refund policy?",
+      "question_variants": [
+        "Can I get a refund?",
+        "Money back guarantee",
+        "What if I want to cancel?"
+      ],
+      "answer": "We offer a 30-day money-back guarantee if our automated funnel does not generate qualified leads for your business."
+    },
+    {
+      "id": "faq_human",
+      "category": "Support",
+      "question": "Can I talk to a real person?",
+      "question_variants": [
+        "Speak to human",
+        "Talk with customer support",
+        "I need a representative"
+      ],
+      "answer": "Absolutely! Type 'human' at any point in this chat and our team will be notified immediately to take over."
+    },
+    {
+      "id": "faq_custom_flows",
+      "category": "Product",
+      "question": "Can I customize the qualification questions?",
+      "question_variants": [
+        "Can I edit the funnel steps?",
+        "Are the questions configurable?",
+        "Can I change the lead scoring?"
+      ],
+      "answer": "Yes, every step, question, scoring weight, and tier threshold is fully configurable in the FunnelBot admin dashboard."
+    },
+    {
+      "id": "faq_ban_risk",
+      "category": "Compliance",
+      "question": "Will my Instagram account get shadowbanned?",
+      "question_variants": [
+        "Is this safe for Instagram?",
+        "Does this violate Meta terms?",
+        "Can my account get banned?"
+      ],
+      "answer": "Our system complies with official Meta API rate limits and human-paced delivery with randomized reply templates to prevent spam flags."
+    },
+    {
+      "id": "faq_location",
+      "category": "Company",
+      "question": "Where is your company located?",
+      "question_variants": [
+        "Where are your offices?",
+        "What country are you based in?",
+        "Where are you based?"
+      ],
+      "answer": "We are a remote-first team based across San Francisco and London, serving creators and brands worldwide."
+    },
+    {
+      "id": "faq_languages",
+      "category": "Product",
+      "question": "What languages does the bot support?",
+      "question_variants": [
+        "Can it speak Spanish or French?",
+        "Is multi-language supported?",
+        "Does it work in other languages?"
+      ],
+      "answer": "Currently the rule engine and FAQ TF-IDF matcher operate in English, but custom language keyword rules can be defined."
+    },
+    {
+      "id": "faq_agency",
+      "category": "Partnership",
+      "question": "Do you have an agency or white-label plan?",
+      "question_variants": [
+        "Can I resell this to clients?",
+        "White label options",
+        "Agency partnership"
+      ],
+      "answer": "Yes! Our Agency Plan allows unlimited client workspaces, custom domains, and white-labeled admin dashboards."
+    },
+    {
+      "id": "faq_gdpr",
+      "category": "Security",
+      "question": "Is FunnelBot GDPR compliant?",
+      "question_variants": [
+        "How do you handle personal data?",
+        "Data privacy and GDPR",
+        "Is user information secure?"
+      ],
+      "answer": "Yes. We respect immediate 'STOP' opt-outs, store minimal PII, and provide single-click data export and deletion."
+    },
+    {
+      "id": "faq_analytics",
+      "category": "Product",
+      "question": "What analytics and metrics do you track?",
+      "question_variants": [
+        "Can I see conversion rates?",
+        "Do you have a reporting dashboard?",
+        "How do I track ROI?"
+      ],
+      "answer": "The dashboard tracks comment-to-DM conversion rate, step-by-step funnel drop-off, lead tier breakdown, and total revenue pipeline."
+    },
+    {
+      "id": "faq_hours",
+      "category": "Support",
+      "question": "What are your business support hours?",
+      "question_variants": [
+        "When is support available?",
+        "Working hours",
+        "Support availability"
+      ],
+      "answer": "Our automated bot runs 24/7/365. Human support agents are available Monday to Friday from 9 AM to 6 PM EST."
+    }
+  ],
+  "flows": [
+    {
+      "id": "lead_qualification",
+      "title": "Lead Qualification Flow",
+      "hot_threshold": 70,
+      "warm_threshold": 40,
+      "closing_messages": {
+        "HOT": "🔥 You're an ideal fit! Book your 1-on-1 strategy call with our senior specialist here: https://cal.com/funnelbot/priority-call",
+        "WARM": "⚡ Thanks for sharing! We've sent our Automation Roadmap blueprint to your inbox. Let's stay in touch!",
+        "COLD": "🌱 Thank you! Here is our Free Starter Checklist to help you start automating: https://example.com/starter-checklist.pdf"
+      },
+      "steps": [
+        {
+          "id": "step_goal",
+          "prompt": "What are you looking to achieve with automation?",
+          "step_type": "choice",
+          "choices": [
+            {
+              "id": "goal_sales",
+              "label": "Scale sales & qualify leads automatically",
+              "points": 30,
+              "synonyms": ["1", "sales", "leads", "scale sales", "revenue"]
+            },
+            {
+              "id": "goal_support",
+              "label": "Automate repetitive customer support & FAQs",
+              "points": 20,
+              "synonyms": ["2", "support", "faq", "customer service"]
+            },
+            {
+              "id": "goal_explore",
+              "label": "Just exploring what's possible",
+              "points": 5,
+              "synonyms": ["3", "explore", "looking around", "not sure"]
+            }
+          ]
+        },
+        {
+          "id": "step_budget",
+          "prompt": "What monthly budget do you have allocated for automation?",
+          "step_type": "choice",
+          "choices": [
+            {
+              "id": "budget_high",
+              "label": "$1,000 - $3,000+ / month",
+              "points": 30,
+              "synonyms": ["1", "high", "1000", "3000", "1k", "enterprise"]
+            },
+            {
+              "id": "budget_med",
+              "label": "$300 - $1,000 / month",
+              "points": 20,
+              "synonyms": ["2", "medium", "300", "500", "starter"]
+            },
+            {
+              "id": "budget_low",
+              "label": "Under $300 / $0 budget",
+              "points": 5,
+              "synonyms": ["3", "low", "free", "zero", "under 300"]
+            }
+          ]
+        },
+        {
+          "id": "step_timeline",
+          "prompt": "How quickly are you looking to launch?",
+          "step_type": "choice",
+          "choices": [
+            {
+              "id": "time_now",
+              "label": "Immediately / Within 7 days",
+              "points": 20,
+              "synonyms": ["1", "now", "asap", "immediately", "this week", "7 days"]
+            },
+            {
+              "id": "time_month",
+              "label": "Within the next 30 days",
+              "points": 10,
+              "synonyms": ["2", "month", "30 days", "soon"]
+            },
+            {
+              "id": "time_later",
+              "label": "No specific timeline / Just researching",
+              "points": 5,
+              "synonyms": ["3", "later", "research", "no timeline"]
+            }
+          ]
+        },
+        {
+          "id": "step_email",
+          "prompt": "What is the best email address to send your personalized resources and details?",
+          "step_type": "email",
+          "points_on_valid": 20,
+          "error_message": "Please enter a valid email address (e.g., name@example.com) to continue."
+        }
+      ]
+    }
+  ]
+}
