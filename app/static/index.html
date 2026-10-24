@@ -2,9 +2,266 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>FunnelBot</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FunnelBot - DM & Comment Funnel Simulator</title>
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <h1>FunnelBot is running</h1>
+
+  <!-- Top Navigation Header -->
+  <header class="app-header">
+    <div class="brand-wrapper">
+      <div class="brand-logo">⚡</div>
+      <div class="brand-text">
+        <h1>FunnelBot <span class="badge-pill">Zero-Budget Engine</span></h1>
+        <p>Channel-Agnostic Social Funnel Automation & Local NLP</p>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <div class="system-status" id="systemStatus">
+        <span class="status-dot"></span> System Operational
+      </div>
+      <button class="btn btn-reset" id="resetBtn" title="Wipe demo state, opt-outs, and rule cooldowns">
+        🔄 Reset Demo
+      </button>
+      <a href="/admin.html" class="btn btn-nav" id="adminLink">
+        📊 Admin Dashboard
+      </a>
+    </div>
+  </header>
+
+  <!-- Walkthrough Guidance Banner -->
+  <aside class="demo-banner">
+    <div class="banner-steps">
+      <span class="step-chip"><strong>1. Comment:</strong> Type <code>GUIDE</code> or <code>giude</code></span>
+      <span class="step-chip"><strong>2. Walkthrough:</strong> Pick choices in DM</span>
+      <span class="step-chip"><strong>3. Interrupt:</strong> Ask <em>"Where are you located?"</em> mid-flow</span>
+      <span class="step-chip"><strong>4. Hot Lead:</strong> Enter email & verify 100 pts score</span>
+    </div>
+    <div style="color:#94a3b8; font-size:0.75rem;">
+      No login required • Free local NLP
+    </div>
+  </aside>
+
+  <!-- Main 3-Column Layout -->
+  <main class="main-layout">
+
+    <!-- Column 1: Simulated Instagram Post & Comments -->
+    <section class="column-card" aria-label="Instagram Post Simulator">
+      <div class="column-header">
+        <h2>📸 Public Post (Comments)</h2>
+        <span class="header-tag">Channel: Instagram / Web</span>
+      </div>
+
+      <div class="post-scroll-area">
+        <article class="ig-post">
+          <!-- Post Author Header -->
+          <div class="ig-post-header">
+            <div class="ig-avatar">
+              <div class="ig-avatar-inner">⚡</div>
+            </div>
+            <div>
+              <span class="ig-username">growth_automation</span>
+              <span class="ig-verified">●</span>
+              <div style="font-size:0.7rem; color:#94a3b8;">Sponsored • Creator Automation</div>
+            </div>
+          </div>
+
+          <!-- Post Media Card -->
+          <div class="ig-post-media">
+            <span class="ig-media-badge">Free Automation Blueprint</span>
+            <h3>How We Automated 10,000+ Lead DMs with $0 APIs</h3>
+            <p>Comment <strong>"GUIDE"</strong> below for our full architecture & instant funnel access!</p>
+          </div>
+
+          <!-- Action Icons -->
+          <div class="ig-actions-row">
+            <div class="ig-actions-left">
+              <span>❤️</span>
+              <span>💬</span>
+              <span>🚀</span>
+            </div>
+            <div>🔖</div>
+          </div>
+
+          <!-- Post Caption -->
+          <div class="ig-caption">
+            <span>growth_automation</span> Stop answering DMs manually. Test our open-source funnel engine right here in real-time! 👇
+          </div>
+
+          <!-- Comments Feed -->
+          <div class="ig-comments-list" id="commentsList">
+            <div class="comment-item">
+              <div><span class="comment-author">@sarah_marketer</span> <span class="comment-text">Is this automation built with free tools?</span></div>
+            </div>
+            <div class="comment-item">
+              <div><span class="comment-author">@growth_agency</span> <span class="comment-text">Looking forward to testing the qualification flow!</span></div>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Comment Input Box -->
+      <div class="comment-input-box">
+        <div class="quick-triggers">
+          <span style="font-size:0.7rem; color:#6b7280; margin-right:4px;">Quick test:</span>
+          <button type="button" class="trigger-chip comment-quick-trigger" data-text="GUIDE">"GUIDE"</button>
+          <button type="button" class="trigger-chip comment-quick-trigger" data-text="giude">"giude" (typo)</button>
+          <button type="button" class="trigger-chip comment-quick-trigger" data-text="What is your pricing?">"PRICE"</button>
+          <button type="button" class="trigger-chip comment-quick-trigger" data-text="LINK">"LINK"</button>
+        </div>
+        <form class="input-form-row" id="commentForm">
+          <input
+            type="text"
+            id="commentInput"
+            class="input-text"
+            placeholder="Add a comment... (e.g. GUIDE)"
+            autocomplete="off"
+            required
+          />
+          <button type="submit" class="btn" style="background:#0095f6; color:#fff;">Post</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Column 2: Simulated Instagram DM Chat -->
+    <section class="column-card" aria-label="Direct Message Inbox Simulator">
+      <div class="column-header">
+        <div class="dm-header-info">
+          <div class="ig-avatar" style="width:28px; height:28px;">
+            <div class="ig-avatar-inner" style="font-size:12px;">⚡</div>
+          </div>
+          <div>
+            <h2 style="font-size:0.9rem;">growth_automation</h2>
+            <div class="dm-active-status">● Active now • Bot Automated</div>
+          </div>
+        </div>
+        <span class="header-tag">Direct Messages</span>
+      </div>
+
+      <!-- Messages Thread -->
+      <div class="dm-messages-container" id="dmContainer">
+        <div class="dm-bubble dm-bubble-in">
+          👋 Hey there! Comment on our post with <strong>GUIDE</strong>, <strong>PRICE</strong>, or <strong>LINK</strong> to start the live funnel, or ask any question here directly.
+        </div>
+      </div>
+
+      <!-- DM Input Box -->
+      <div class="comment-input-box">
+        <div class="quick-triggers">
+          <span style="font-size:0.7rem; color:#6b7280; margin-right:4px;">Test edge cases:</span>
+          <button type="button" class="trigger-chip dm-quick-trigger" data-text="Where are you located?">Where are you located? (FAQ Interruption)</button>
+          <button type="button" class="trigger-chip dm-quick-trigger" data-text="human">"human" (Takeover)</button>
+          <button type="button" class="trigger-chip dm-quick-trigger" data-text="STOP">"STOP" (Opt-out)</button>
+        </div>
+        <form class="input-form-row" id="dmForm">
+          <input
+            type="text"
+            id="dmInput"
+            class="input-text"
+            placeholder="Send message..."
+            autocomplete="off"
+            required
+          />
+          <button type="submit" class="btn" style="background:#3797f0; color:#fff;">Send</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Column 3: Live Engine Inspector (The Recruiter Wow Factor) -->
+    <section class="column-card" aria-label="Live Engine Telemetry Inspector">
+      <div class="column-header">
+        <h2>⚙️ Engine Inspector</h2>
+        <span class="header-tag" style="background:rgba(99,102,241,0.2); color:#a5b4fc;">Live Telemetry</span>
+      </div>
+
+      <div class="inspector-scroll-area">
+        <!-- Rule Match Telemetry -->
+        <div class="telemetry-card">
+          <div class="telemetry-title">
+            <span>1. Keyword Trigger Engine</span>
+            <span class="badge-pill" style="font-size:0.6rem;">RapidFuzz</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">Matched Rule:</span>
+            <span class="metric-val" id="matchedRule">None</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">Keyword Fired:</span>
+            <span class="metric-val" id="matchedKeyword">None</span>
+          </div>
+        </div>
+
+        <!-- FAQ TF-IDF Telemetry -->
+        <div class="telemetry-card">
+          <div class="telemetry-title">
+            <span>2. FAQ Cosine Matcher</span>
+            <span id="faqConfidenceBadge" class="tier-badge" style="font-size:0.65rem;">IDLE</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">Matched Query:</span>
+            <span class="metric-val" id="faqQuestion" style="font-size:0.75rem;">None</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">TF-IDF Similarity:</span>
+            <span class="metric-val" id="faqScore">0.00</span>
+          </div>
+        </div>
+
+        <!-- Funnel State Machine Telemetry -->
+        <div class="telemetry-card">
+          <div class="telemetry-title">
+            <span>3. Qualification Flow</span>
+            <span class="badge-pill" style="font-size:0.6rem;">State Machine</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">Current Step:</span>
+            <span class="metric-val" id="flowStep">Idle</span>
+          </div>
+        </div>
+
+        <!-- Lead Scoring & Tier -->
+        <div class="telemetry-card">
+          <div class="telemetry-title">
+            <span>4. Lead Scoring & Tier</span>
+            <span id="leadTier" class="tier-badge">None</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">Accumulated Score:</span>
+            <span class="metric-val" id="leadScore">0 pts</span>
+          </div>
+          <div class="score-progress">
+            <div class="score-bar" id="scoreBar"></div>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:0.65rem; color:#6b7280; margin-top:4px;">
+            <span>Cold (&lt;40)</span>
+            <span>Warm (40-69)</span>
+            <span>Hot (70+)</span>
+          </div>
+        </div>
+
+        <!-- Real-Time Console Log -->
+        <div class="telemetry-card" style="flex:1; display:flex; flex-direction:column;">
+          <div class="telemetry-title">
+            <span>5. Decision Trace Stream</span>
+            <span style="font-size:0.65rem; color:#6b7280;">Real-time</span>
+          </div>
+          <div class="inspector-console" id="consoleLogs">
+            <div class="console-entry">
+              <span class="console-time">[00:00:00]</span> FunnelBot engine telemetry initialized.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Client Script -->
+  <script src="/app.js"></script>
 </body>
 </html>
