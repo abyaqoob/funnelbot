@@ -1,11 +1,19 @@
 """Telegram Channel Adapter using direct webhook & HTTP client."""
-from datetime import datetime, timezone
 import logging
-from typing import Any, Dict, List, Optional
+from datetime import UTC, datetime
+from typing import Any
+
 import httpx
+
 from app.adapters.base import ChannelAdapter
 from app.config import settings
-from app.models.events import ActionType, Channel, EngineAction, EventType, NormalizedEvent
+from app.models.events import (
+    ActionType,
+    Channel,
+    EngineAction,
+    EventType,
+    NormalizedEvent,
+)
 
 logger = logging.getLogger("funnelbot.adapters.telegram")
 
@@ -15,12 +23,12 @@ class TelegramAdapter(ChannelAdapter):
 
     BASE_URL = "https://api.telegram.org"
 
-    def __init__(self, bot_token: Optional[str] = None):
+    def __init__(self, bot_token: str | None = None):
         self.bot_token = bot_token or settings.TELEGRAM_BOT_TOKEN
 
     def normalize_inbound(
-        self, payload: Dict[str, Any], headers: Optional[Dict[str, str]] = None
-    ) -> Optional[NormalizedEvent]:
+        self, payload: dict[str, Any], headers: dict[str, str] | None = None
+    ) -> NormalizedEvent | None:
         """
         Parses a Telegram Update object into a NormalizedEvent.
         Supports text messages and button callback queries.
@@ -30,14 +38,14 @@ class TelegramAdapter(ChannelAdapter):
 
         user_data = None
         text = ""
-        timestamp = datetime.now(timezone.utc)
+        timestamp = datetime.now(UTC)
 
         if message:
             user_data = message.get("from") or message.get("chat")
             text = message.get("text", "")
             date_unix = message.get("date")
             if date_unix:
-                timestamp = datetime.fromtimestamp(date_unix, tz=timezone.utc)
+                timestamp = datetime.fromtimestamp(date_unix, tz=UTC)
         elif callback_query:
             user_data = callback_query.get("from")
             text = callback_query.get("data", "")
@@ -113,7 +121,7 @@ class TelegramAdapter(ChannelAdapter):
             logger.error("Failed to send Telegram message: %s", exc)
             return False
 
-    def set_webhook(self, webhook_url: str, secret_token: Optional[str] = None) -> bool:
+    def set_webhook(self, webhook_url: str, secret_token: str | None = None) -> bool:
         """Register the public webhook endpoint with Telegram."""
         if not self.bot_token:
             raise ValueError("TELEGRAM_BOT_TOKEN must be configured to set webhook.")

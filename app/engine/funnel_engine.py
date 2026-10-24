@@ -1,7 +1,7 @@
 """Master Funnel Engine coordinating Keyword Triggers, FAQ Matcher, State Machine, and LLM fallback."""
-from datetime import datetime, timezone
 import random
-from typing import List, Optional
+from datetime import UTC, datetime
+
 from app.engine.faq_matcher import FAQMatcher
 from app.engine.keyword_matcher import KeywordMatcher
 from app.engine.llm_fallback import LLMProvider, get_llm_provider
@@ -25,7 +25,7 @@ class FunnelEngine:
     def __init__(
         self,
         storage: Storage,
-        llm_provider: Optional[LLMProvider] = None,
+        llm_provider: LLMProvider | None = None,
     ):
         self.storage = storage
         self.keyword_matcher = KeywordMatcher()
@@ -46,7 +46,7 @@ class FunnelEngine:
         user_id = event.user_id
         username = event.username
         text = event.text.strip()
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         # 1. Global Opt-Out Check
         if self.storage.is_opted_out(channel_val, user_id):
@@ -162,7 +162,7 @@ class FunnelEngine:
         # Record trigger
         self.storage.record_rule_trigger(event.user_id, rule.id)
 
-        actions: List[EngineAction] = []
+        actions: list[EngineAction] = []
 
         # 1. Randomized public reply to avoid spam
         template = (

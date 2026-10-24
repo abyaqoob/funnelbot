@@ -1,5 +1,6 @@
 """Tests for keyword matcher (exact, contains, and RapidFuzz fuzzy algorithms)."""
 import pytest
+
 from app.engine.keyword_matcher import KeywordMatcher
 from app.models.rules import MatchMode, TriggerRule
 

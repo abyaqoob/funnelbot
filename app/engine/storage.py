@@ -1,9 +1,10 @@
 """Storage layer interface and in-memory implementation."""
-from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional, Set, Tuple
+from datetime import UTC, datetime
+from typing import Any
+
 from app.models.events import EngineAction, InspectorInfo, NormalizedEvent
 from app.models.faq import FAQItem
-from app.models.flow import ConversationState, ConversationStatus, QualificationFlow
+from app.models.flow import ConversationState, QualificationFlow
 from app.models.leads import Lead
 from app.models.rules import TriggerRule
 
@@ -11,10 +12,10 @@ from app.models.rules import TriggerRule
 class Storage:
     """Storage interface for FunnelBot."""
 
-    def get_rules(self) -> List[TriggerRule]:
+    def get_rules(self) -> list[TriggerRule]:
         raise NotImplementedError
 
-    def get_rule(self, rule_id: str) -> Optional[TriggerRule]:
+    def get_rule(self, rule_id: str) -> TriggerRule | None:
         raise NotImplementedError
 
     def save_rule(self, rule: TriggerRule) -> None:
@@ -23,10 +24,10 @@ class Storage:
     def delete_rule(self, rule_id: str) -> bool:
         raise NotImplementedError
 
-    def get_faqs(self) -> List[FAQItem]:
+    def get_faqs(self) -> list[FAQItem]:
         raise NotImplementedError
 
-    def get_faq(self, faq_id: str) -> Optional[FAQItem]:
+    def get_faq(self, faq_id: str) -> FAQItem | None:
         raise NotImplementedError
 
     def save_faq(self, faq: FAQItem) -> None:
@@ -35,10 +36,10 @@ class Storage:
     def delete_faq(self, faq_id: str) -> bool:
         raise NotImplementedError
 
-    def get_flows(self) -> List[QualificationFlow]:
+    def get_flows(self) -> list[QualificationFlow]:
         raise NotImplementedError
 
-    def get_flow(self, flow_id: str) -> Optional[QualificationFlow]:
+    def get_flow(self, flow_id: str) -> QualificationFlow | None:
         raise NotImplementedError
 
     def save_flow(self, flow: QualificationFlow) -> None:
@@ -47,7 +48,7 @@ class Storage:
     def delete_flow(self, flow_id: str) -> bool:
         raise NotImplementedError
 
-    def get_state(self, channel: str, user_id: str) -> Optional[ConversationState]:
+    def get_state(self, channel: str, user_id: str) -> ConversationState | None:
         raise NotImplementedError
 
     def save_state(self, state: ConversationState) -> None:
@@ -65,7 +66,7 @@ class Storage:
     def record_rule_trigger(self, user_id: str, rule_id: str) -> None:
         raise NotImplementedError
 
-    def get_last_rule_trigger(self, user_id: str, rule_id: str) -> Optional[datetime]:
+    def get_last_rule_trigger(self, user_id: str, rule_id: str) -> datetime | None:
         raise NotImplementedError
 
     def clear_rule_triggers(self, user_id: str) -> None:
@@ -74,18 +75,18 @@ class Storage:
     def save_lead(self, lead: Lead) -> None:
         raise NotImplementedError
 
-    def get_leads(self) -> List[Lead]:
+    def get_leads(self) -> list[Lead]:
         raise NotImplementedError
 
     def log_conversation(
         self,
         event: NormalizedEvent,
-        actions: List[EngineAction],
+        actions: list[EngineAction],
         inspector: InspectorInfo,
     ) -> None:
         raise NotImplementedError
 
-    def get_conversation_logs(self, limit: int = 50, offset: int = 0) -> List[Dict[str, Any]]:
+    def get_conversation_logs(self, limit: int = 50, offset: int = 0) -> list[dict[str, Any]]:
         raise NotImplementedError
 
 
@@ -93,19 +94,19 @@ class InMemoryStorage(Storage):
     """Thread-safe, testable in-memory storage implementation."""
 
     def __init__(self):
-        self.rules: Dict[str, TriggerRule] = {}
-        self.faqs: Dict[str, FAQItem] = {}
-        self.flows: Dict[str, QualificationFlow] = {}
-        self.states: Dict[Tuple[str, str], ConversationState] = {}
-        self.opted_out_users: Set[Tuple[str, str]] = set()
-        self.rule_triggers: Dict[Tuple[str, str], datetime] = {}
-        self.leads: List[Lead] = []
-        self.logs: List[Dict[str, Any]] = []
+        self.rules: dict[str, TriggerRule] = {}
+        self.faqs: dict[str, FAQItem] = {}
+        self.flows: dict[str, QualificationFlow] = {}
+        self.states: dict[tuple[str, str], ConversationState] = {}
+        self.opted_out_users: set[tuple[str, str]] = set()
+        self.rule_triggers: dict[tuple[str, str], datetime] = {}
+        self.leads: list[Lead] = []
+        self.logs: list[dict[str, Any]] = []
 
-    def get_rules(self) -> List[TriggerRule]:
+    def get_rules(self) -> list[TriggerRule]:
         return [r for r in self.rules.values() if r.is_active]
 
-    def get_rule(self, rule_id: str) -> Optional[TriggerRule]:
+    def get_rule(self, rule_id: str) -> TriggerRule | None:
         return self.rules.get(rule_id)
 
     def save_rule(self, rule: TriggerRule) -> None:
@@ -114,10 +115,10 @@ class InMemoryStorage(Storage):
     def delete_rule(self, rule_id: str) -> bool:
         return self.rules.pop(rule_id, None) is not None
 
-    def get_faqs(self) -> List[FAQItem]:
+    def get_faqs(self) -> list[FAQItem]:
         return [f for f in self.faqs.values() if f.is_active]
 
-    def get_faq(self, faq_id: str) -> Optional[FAQItem]:
+    def get_faq(self, faq_id: str) -> FAQItem | None:
         return self.faqs.get(faq_id)
 
     def save_faq(self, faq: FAQItem) -> None:
@@ -126,10 +127,10 @@ class InMemoryStorage(Storage):
     def delete_faq(self, faq_id: str) -> bool:
         return self.faqs.pop(faq_id, None) is not None
 
-    def get_flows(self) -> List[QualificationFlow]:
+    def get_flows(self) -> list[QualificationFlow]:
         return list(self.flows.values())
 
-    def get_flow(self, flow_id: str) -> Optional[QualificationFlow]:
+    def get_flow(self, flow_id: str) -> QualificationFlow | None:
         return self.flows.get(flow_id)
 
     def save_flow(self, flow: QualificationFlow) -> None:
@@ -138,7 +139,7 @@ class InMemoryStorage(Storage):
     def delete_flow(self, flow_id: str) -> bool:
         return self.flows.pop(flow_id, None) is not None
 
-    def get_state(self, channel: str, user_id: str) -> Optional[ConversationState]:
+    def get_state(self, channel: str, user_id: str) -> ConversationState | None:
         return self.states.get((channel, user_id))
 
     def save_state(self, state: ConversationState) -> None:
@@ -158,9 +159,9 @@ class InMemoryStorage(Storage):
             self.opted_out_users.discard(key)
 
     def record_rule_trigger(self, user_id: str, rule_id: str) -> None:
-        self.rule_triggers[(user_id, rule_id)] = datetime.now(timezone.utc)
+        self.rule_triggers[(user_id, rule_id)] = datetime.now(UTC)
 
-    def get_last_rule_trigger(self, user_id: str, rule_id: str) -> Optional[datetime]:
+    def get_last_rule_trigger(self, user_id: str, rule_id: str) -> datetime | None:
         return self.rule_triggers.get((user_id, rule_id))
 
     def clear_rule_triggers(self, user_id: str) -> None:
@@ -171,13 +172,13 @@ class InMemoryStorage(Storage):
     def save_lead(self, lead: Lead) -> None:
         self.leads.append(lead)
 
-    def get_leads(self) -> List[Lead]:
+    def get_leads(self) -> list[Lead]:
         return list(self.leads)
 
     def log_conversation(
         self,
         event: NormalizedEvent,
-        actions: List[EngineAction],
+        actions: list[EngineAction],
         inspector: InspectorInfo,
     ) -> None:
         self.logs.insert(
@@ -195,7 +196,7 @@ class InMemoryStorage(Storage):
             },
         )
 
-    def get_conversation_logs(self, limit: int = 50, offset: int = 0) -> List[Dict[str, Any]]:
+    def get_conversation_logs(self, limit: int = 50, offset: int = 0) -> list[dict[str, Any]]:
         return self.logs[offset : offset + limit]
 
     def clear(self) -> None:

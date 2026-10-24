@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  funnelbot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: funnelbot:latest
+    container_name: funnelbot
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:////app/data/funnelbot.db
+      - DEMO_MODE=true
+      - ADMIN_PASSWORD=admin123
+      - RATE_LIMIT_PER_MINUTE=60
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN:-}
+      - TELEGRAM_WEBHOOK_SECRET=${TELEGRAM_WEBHOOK_SECRET:-}
+      - TELEGRAM_WEBHOOK_URL=${TELEGRAM_WEBHOOK_URL:-}
+      - INSTAGRAM_VERIFY_TOKEN=${INSTAGRAM_VERIFY_TOKEN:-meta_dev_secret}
+      - INSTAGRAM_PAGE_ACCESS_TOKEN=${INSTAGRAM_PAGE_ACCESS_TOKEN:-}
+      - LLM_PROVIDER=${LLM_PROVIDER:-none}
+      - GROQ_API_KEY=${GROQ_API_KEY:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+    volumes:
+      - funnelbot-data:/app/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  funnelbot-data:

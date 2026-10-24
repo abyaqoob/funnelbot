@@ -1,6 +1,6 @@
 """FAQ models for DM automated answers."""
 from enum import Enum
-from typing import List, Optional
+
 from pydantic import BaseModel, Field
 
 
@@ -13,18 +13,18 @@ class FAQConfidence(str, Enum):
 class FAQItem(BaseModel):
     id: str
     question: str
-    question_variants: List[str] = Field(default_factory=list)
+    question_variants: list[str] = Field(default_factory=list)
     answer: str
     category: str = "General"
     is_active: bool = True
 
-    def all_questions(self) -> List[str]:
+    def all_questions(self) -> list[str]:
         """Returns primary question + variants."""
         return [self.question] + [v for v in self.question_variants if v.strip()]
 
 
 class FAQMatchResult(BaseModel):
-    faq: Optional[FAQItem] = None
-    matched_query: Optional[str] = None
+    faq: FAQItem | None = None
+    matched_query: str | None = None
     score: float = 0.0
     confidence: FAQConfidence = FAQConfidence.LOW

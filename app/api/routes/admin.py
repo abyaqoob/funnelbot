@@ -1,17 +1,17 @@
 """Admin management endpoints: Rules, FAQs, Flows, Leads, Logs, and Analytics."""
 import csv
 import io
-from typing import Any, Dict, List, Optional
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+
+from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import Response
-from sqlmodel import Session, col, func, select
+from sqlmodel import Session, func, select
+
 from app.api.deps import get_db_storage, invalidate_faq_cache, verify_admin_access
 from app.database import get_session
 from app.engine.storage import Storage
 from app.models.db_models import (
     ConversationLogDB,
     ConversationStateDB,
-    LeadDB,
 )
 from app.models.faq import FAQItem
 from app.models.flow import QualificationFlow
@@ -29,7 +29,7 @@ router = APIRouter(
 # RULES
 # ==========================================
 
-@router.get("/rules", response_model=List[TriggerRule])
+@router.get("/rules", response_model=list[TriggerRule])
 def list_rules(storage: Storage = Depends(get_db_storage)):
     """List all trigger rules."""
     return storage.get_rules()
@@ -63,7 +63,7 @@ def delete_rule(rule_id: str, storage: Storage = Depends(get_db_storage)):
 # FAQs
 # ==========================================
 
-@router.get("/faqs", response_model=List[FAQItem])
+@router.get("/faqs", response_model=list[FAQItem])
 def list_faqs(storage: Storage = Depends(get_db_storage)):
     """List all FAQ entries."""
     return storage.get_faqs()
@@ -100,7 +100,7 @@ def delete_faq(faq_id: str, storage: Storage = Depends(get_db_storage)):
 # FLOWS
 # ==========================================
 
-@router.get("/flows", response_model=List[QualificationFlow])
+@router.get("/flows", response_model=list[QualificationFlow])
 def list_flows(storage: Storage = Depends(get_db_storage)):
     """List all lead qualification flows."""
     return storage.get_flows()
@@ -129,16 +129,16 @@ def update_flow(
 # LEADS & CSV EXPORT
 # ==========================================
 
-@router.get("/leads", response_model=List[Lead])
+@router.get("/leads", response_model=list[Lead])
 def list_leads(
-    tier: Optional[str] = Query(None, description="Filter by HOT, WARM, or COLD"),
+    tier: str | None = Query(None, description="Filter by HOT, WARM, or COLD"),
     storage: Storage = Depends(get_db_storage),
 ):
     """List captured leads, optionally filtered by tier."""
     leads = storage.get_leads()
     if tier:
         tier_upper = tier.upper().strip()
-        leads = [l for l in leads if l.tier.value == tier_upper]
+        leads = [lead for lead in leads if lead.tier.value == tier_upper]
     return leads
 
 
@@ -205,8 +205,8 @@ def get_analytics(
     leads = storage.get_leads()
     total_leads = len(leads)
     leads_by_tier = {"HOT": 0, "WARM": 0, "COLD": 0}
-    for l in leads:
-        t = l.tier.value
+    for lead in leads:
+        t = lead.tier.value
         if t in leads_by_tier:
             leads_by_tier[t] += 1
 
@@ -232,7 +232,7 @@ def get_analytics(
     )
 
     # Step drop-off breakdown
-    drop_off_per_step: Dict[str, int] = {}
+    drop_off_per_step: dict[str, int] = {}
     for s in states:
         step_id = s.current_step_id or ("completed" if s.status == "completed" else "unknown")
         drop_off_per_step[step_id] = drop_off_per_step.get(step_id, 0) + 1

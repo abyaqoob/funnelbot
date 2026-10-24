@@ -1,7 +1,7 @@
 """Application configuration loaded from environment variables and .env file."""
 import os
 from pathlib import Path
-from typing import Optional
+
 from dotenv import load_dotenv
 
 # Load .env file from project root if it exists
@@ -28,14 +28,14 @@ class Settings:
 
     # Pluggable LLM fallback
     LLM_PROVIDER: str = os.getenv("LLM_PROVIDER", "none")
-    GROQ_API_KEY: Optional[str] = os.getenv("GROQ_API_KEY")
-    GEMINI_API_KEY: Optional[str] = os.getenv("GEMINI_API_KEY")
+    GROQ_API_KEY: str | None = os.getenv("GROQ_API_KEY")
+    GEMINI_API_KEY: str | None = os.getenv("GEMINI_API_KEY")
 
     # Channel Adapters
-    TELEGRAM_BOT_TOKEN: Optional[str] = os.getenv("TELEGRAM_BOT_TOKEN")
-    TELEGRAM_WEBHOOK_SECRET: Optional[str] = os.getenv("TELEGRAM_WEBHOOK_SECRET")
-    INSTAGRAM_PAGE_ID: Optional[str] = os.getenv("INSTAGRAM_PAGE_ID")
-    INSTAGRAM_ACCESS_TOKEN: Optional[str] = os.getenv("INSTAGRAM_ACCESS_TOKEN")
+    TELEGRAM_BOT_TOKEN: str | None = os.getenv("TELEGRAM_BOT_TOKEN")
+    TELEGRAM_WEBHOOK_SECRET: str | None = os.getenv("TELEGRAM_WEBHOOK_SECRET")
+    INSTAGRAM_PAGE_ID: str | None = os.getenv("INSTAGRAM_PAGE_ID")
+    INSTAGRAM_ACCESS_TOKEN: str | None = os.getenv("INSTAGRAM_ACCESS_TOKEN")
     INSTAGRAM_VERIFY_TOKEN: str = os.getenv("INSTAGRAM_VERIFY_TOKEN", "meta_dev_secret")
 
 

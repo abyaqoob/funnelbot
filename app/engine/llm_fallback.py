@@ -5,7 +5,6 @@ If keys are missing, rates exceeded, or calls fail, smoothly falls back to rule-
 """
 import logging
 import os
-from typing import Optional
 
 logger = logging.getLogger("funnelbot.llm")
 
@@ -13,7 +12,7 @@ logger = logging.getLogger("funnelbot.llm")
 class LLMProvider:
     """Base interface for optional LLM fallback providers."""
 
-    def generate_reply(self, prompt: str, context: Optional[str] = None) -> Optional[str]:
+    def generate_reply(self, prompt: str, context: str | None = None) -> str | None:
         """
         Generate conversational fallback response.
         Returns response string if successful, or None on failure/disabled.
@@ -24,18 +23,18 @@ class LLMProvider:
 class NoneLLMProvider(LLMProvider):
     """Default provider: disabled, zero API calls, 100% local rule-based."""
 
-    def generate_reply(self, prompt: str, context: Optional[str] = None) -> Optional[str]:
+    def generate_reply(self, prompt: str, context: str | None = None) -> str | None:
         return None
 
 
 class GroqLLMProvider(LLMProvider):
     """Groq API provider (free tier)."""
 
-    def __init__(self, api_key: Optional[str] = None, model: str = "llama-3.1-8b-instant"):
+    def __init__(self, api_key: str | None = None, model: str = "llama-3.1-8b-instant"):
         self.api_key = api_key or os.getenv("GROQ_API_KEY")
         self.model = os.getenv("GROQ_MODEL", model)
 
-    def generate_reply(self, prompt: str, context: Optional[str] = None) -> Optional[str]:
+    def generate_reply(self, prompt: str, context: str | None = None) -> str | None:
         if not self.api_key:
             return None
 
@@ -80,11 +79,11 @@ class GroqLLMProvider(LLMProvider):
 class GeminiLLMProvider(LLMProvider):
     """Google Gemini API provider (free tier)."""
 
-    def __init__(self, api_key: Optional[str] = None, model: str = "gemini-1.5-flash"):
+    def __init__(self, api_key: str | None = None, model: str = "gemini-1.5-flash"):
         self.api_key = api_key or os.getenv("GEMINI_API_KEY")
         self.model = os.getenv("GEMINI_MODEL", model)
 
-    def generate_reply(self, prompt: str, context: Optional[str] = None) -> Optional[str]:
+    def generate_reply(self, prompt: str, context: str | None = None) -> str | None:
         if not self.api_key:
             return None
 
@@ -123,7 +122,7 @@ class GeminiLLMProvider(LLMProvider):
             return None
 
 
-def get_llm_provider(provider_type: Optional[str] = None) -> LLMProvider:
+def get_llm_provider(provider_type: str | None = None) -> LLMProvider:
     """Factory to retrieve configured LLM provider with fallback to none."""
     prov = (provider_type or os.getenv("LLM_PROVIDER", "none")).lower().strip()
     if prov == "groq":

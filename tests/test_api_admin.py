@@ -1,5 +1,6 @@
 """Integration tests for Admin API endpoints (Rules, FAQs, Flows, Leads, Analytics)."""
 from fastapi.testclient import TestClient
+
 from app.config import settings
 
 AUTH_HEADERS = {"X-Admin-Password": settings.ADMIN_PASSWORD}
@@ -143,12 +144,12 @@ def test_admin_leads_and_csv_export(client: TestClient):
     assert res_leads.status_code == 200
     leads = res_leads.json()
     assert len(leads) >= 1
-    assert any(l["email"] == "lead@company.com" for l in leads)
+    assert any(lead["email"] == "lead@company.com" for lead in leads)
 
     # 2. Filter Leads by tier
     res_hot = client.get("/api/admin/leads?tier=HOT")
     assert res_hot.status_code == 200
-    assert all(l["tier"] == "HOT" for l in res_hot.json())
+    assert all(lead["tier"] == "HOT" for lead in res_hot.json())
 
     # 3. Export CSV
     res_csv = client.get("/api/admin/leads/export")

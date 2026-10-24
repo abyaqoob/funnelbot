@@ -1,8 +1,10 @@
 """SQLModel database implementation of the Storage interface."""
-from datetime import datetime, timezone
 import json
-from typing import Any, Dict, List, Optional
-from sqlmodel import Session, col, desc, select
+from datetime import UTC, datetime
+from typing import Any
+
+from sqlmodel import Session, desc, select
+
 from app.engine.storage import Storage
 from app.models.db_models import (
     ConversationLogDB,
@@ -27,11 +29,11 @@ class SQLStorage(Storage):
     def __init__(self, session: Session):
         self.session = session
 
-    def get_rules(self) -> List[TriggerRule]:
-        rules_db = self.session.exec(select(RuleDB).where(RuleDB.is_active == True)).all()  # noqa: E712
+    def get_rules(self) -> list[TriggerRule]:
+        rules_db = self.session.exec(select(RuleDB).where(RuleDB.is_active)).all()
         return [r.to_domain() for r in rules_db]
 
-    def get_rule(self, rule_id: str) -> Optional[TriggerRule]:
+    def get_rule(self, rule_id: str) -> TriggerRule | None:
         rule_db = self.session.get(RuleDB, rule_id)
         return rule_db.to_domain() if rule_db else None
 
@@ -48,11 +50,11 @@ class SQLStorage(Storage):
             return True
         return False
 
-    def get_faqs(self) -> List[FAQItem]:
-        faqs_db = self.session.exec(select(FAQItemDB).where(FAQItemDB.is_active == True)).all()  # noqa: E712
+    def get_faqs(self) -> list[FAQItem]:
+        faqs_db = self.session.exec(select(FAQItemDB).where(FAQItemDB.is_active)).all()
         return [f.to_domain() for f in faqs_db]
 
-    def get_faq(self, faq_id: str) -> Optional[FAQItem]:
+    def get_faq(self, faq_id: str) -> FAQItem | None:
         faq_db = self.session.get(FAQItemDB, faq_id)
         return faq_db.to_domain() if faq_db else None
 
@@ -69,11 +71,11 @@ class SQLStorage(Storage):
             return True
         return False
 
-    def get_flows(self) -> List[QualificationFlow]:
+    def get_flows(self) -> list[QualificationFlow]:
         flows_db = self.session.exec(select(FlowDB)).all()
         return [fl.to_domain() for fl in flows_db]
 
-    def get_flow(self, flow_id: str) -> Optional[QualificationFlow]:
+    def get_flow(self, flow_id: str) -> QualificationFlow | None:
         flow_db = self.session.get(FlowDB, flow_id)
         return flow_db.to_domain() if flow_db else None
 
@@ -90,7 +92,7 @@ class SQLStorage(Storage):
             return True
         return False
 
-    def get_state(self, channel: str, user_id: str) -> Optional[ConversationState]:
+    def get_state(self, channel: str, user_id: str) -> ConversationState | None:
         state_db = self.session.get(ConversationStateDB, (channel, user_id))
         return state_db.to_domain() if state_db else None
 
@@ -124,12 +126,12 @@ class SQLStorage(Storage):
         trigger = RuleTriggerDB(
             user_id=user_id,
             rule_id=rule_id,
-            triggered_at=datetime.now(timezone.utc),
+            triggered_at=datetime.now(UTC),
         )
         self.session.add(trigger)
         self.session.commit()
 
-    def get_last_rule_trigger(self, user_id: str, rule_id: str) -> Optional[datetime]:
+    def get_last_rule_trigger(self, user_id: str, rule_id: str) -> datetime | None:
         statement = (
             select(RuleTriggerDB)
             .where(RuleTriggerDB.user_id == user_id, RuleTriggerDB.rule_id == rule_id)
@@ -139,7 +141,7 @@ class SQLStorage(Storage):
         if trigger:
             dt = trigger.triggered_at
             if dt.tzinfo is None:
-                dt = dt.replace(tzinfo=timezone.utc)
+                dt = dt.replace(tzinfo=UTC)
             return dt
         return None
 
@@ -155,15 +157,15 @@ class SQLStorage(Storage):
         self.session.merge(lead_db)
         self.session.commit()
 
-    def get_leads(self) -> List[Lead]:
+    def get_leads(self) -> list[Lead]:
         statement = select(LeadDB).order_by(desc(LeadDB.created_at))
         leads_db = self.session.exec(statement).all()
-        return [l.to_domain() for l in leads_db]
+        return [lead.to_domain() for lead in leads_db]
 
     def log_conversation(
         self,
         event: NormalizedEvent,
-        actions: List[EngineAction],
+        actions: list[EngineAction],
         inspector: InspectorInfo,
     ) -> None:
         log_entry = ConversationLogDB(
@@ -180,7 +182,7 @@ class SQLStorage(Storage):
         self.session.add(log_entry)
         self.session.commit()
 
-    def get_conversation_logs(self, limit: int = 50, offset: int = 0) -> List[Dict[str, Any]]:
+    def get_conversation_logs(self, limit: int = 50, offset: int = 0) -> list[dict[str, Any]]:
         statement = select(ConversationLogDB).order_by(desc(ConversationLogDB.timestamp)).offset(offset).limit(limit)
         entries = self.session.exec(statement).all()
         result = []

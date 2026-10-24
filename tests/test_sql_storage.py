@@ -1,11 +1,17 @@
 """Unit tests for SQLStorage database persistence."""
-from datetime import datetime, timezone
 from sqlmodel import Session
+
 from app.engine.sql_storage import SQLStorage
-from app.models.events import ActionType, Channel, EngineAction, EventType, InspectorInfo, NormalizedEvent
+from app.models.events import (
+    ActionType,
+    Channel,
+    EngineAction,
+    EventType,
+    InspectorInfo,
+    NormalizedEvent,
+)
 from app.models.faq import FAQItem
-from app.models.flow import ConversationState, ConversationStatus, QualificationFlow
-from app.models.leads import Lead
+from app.models.flow import ConversationState, ConversationStatus
 from app.models.rules import MatchMode, TriggerRule
 
 

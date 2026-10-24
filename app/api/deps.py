@@ -1,9 +1,10 @@
 """API dependencies: Database sessions, storage, engine, and admin security."""
 import secrets
-from typing import Generator, Optional
+
 from fastapi import Depends, Header, HTTPException, Query, Request, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from sqlmodel import Session
+
 from app.config import settings
 from app.database import get_session
 from app.engine.faq_matcher import FAQMatcher
@@ -15,7 +16,7 @@ from app.engine.storage import Storage
 security_basic = HTTPBasic(auto_error=False)
 
 # Global cached FAQMatcher to optimize TF-IDF across requests
-_cached_faq_matcher: Optional[FAQMatcher] = None
+_cached_faq_matcher: FAQMatcher | None = None
 
 
 def get_db_storage(session: Session = Depends(get_session)) -> Storage:
@@ -47,9 +48,9 @@ def get_funnel_engine(storage: Storage = Depends(get_db_storage)) -> FunnelEngin
 
 def verify_admin_access(
     request: Request,
-    credentials: Optional[HTTPBasicCredentials] = Depends(security_basic),
-    x_admin_password: Optional[str] = Header(None, alias="X-Admin-Password"),
-    token: Optional[str] = Query(None),
+    credentials: HTTPBasicCredentials | None = Depends(security_basic),
+    x_admin_password: str | None = Header(None, alias="X-Admin-Password"),
+    token: str | None = Query(None),
 ) -> bool:
     """
     Validates admin authorization.

@@ -1,7 +1,9 @@
 """Database connection engine, session management, and initialization."""
 import logging
-from typing import Generator
+from collections.abc import Generator
+
 from sqlmodel import Session, SQLModel, create_engine, select
+
 from app.config import settings
 from app.data.seed_loader import load_seed_data
 from app.models.db_models import (  # noqa: F401 - ensure models registered with metadata

@@ -1,7 +1,9 @@
 """Tests for Instagram Stub Adapter and Webhook endpoint."""
 from unittest.mock import MagicMock, patch
-from fastapi.testclient import TestClient
+
 import pytest
+from fastapi.testclient import TestClient
+
 from app.adapters.instagram_stub import InstagramStubAdapter
 from app.config import settings
 from app.models.events import ActionType, Channel, EngineAction, EventType

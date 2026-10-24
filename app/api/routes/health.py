@@ -1,7 +1,9 @@
 """Health and diagnostic endpoint."""
-from datetime import datetime, timezone
+from datetime import UTC, datetime
+
 from fastapi import APIRouter, Depends
 from sqlmodel import Session, text
+
 from app.config import settings
 from app.database import get_session
 
@@ -24,5 +26,5 @@ def health_check(session: Session = Depends(get_session)):
         "database": db_status,
         "demo_mode": settings.DEMO_MODE,
         "llm_provider": settings.LLM_PROVIDER,
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "timestamp": datetime.now(UTC).isoformat(),
     }

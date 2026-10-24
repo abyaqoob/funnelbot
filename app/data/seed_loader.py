@@ -1,7 +1,7 @@
 """Loader for seed rules, FAQs, and qualification flows."""
 import json
 from pathlib import Path
-from typing import Any, Dict
+
 from app.engine.storage import Storage
 from app.models.faq import FAQItem
 from app.models.flow import QualificationFlow
@@ -10,9 +10,9 @@ from app.models.rules import TriggerRule
 SEED_FILE = Path(__file__).parent / "seed.json"
 
 
-def load_seed_data(storage: Storage, filepath: Path = SEED_FILE) -> Dict[str, int]:
+def load_seed_data(storage: Storage, filepath: Path = SEED_FILE) -> dict[str, int]:
     """Loads default seed rules, FAQs, and flows into storage."""
-    with open(filepath, "r", encoding="utf-8") as f:
+    with open(filepath, encoding="utf-8") as f:
         data = json.load(f)
 
     rules_count = 0

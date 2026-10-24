@@ -1,11 +1,11 @@
 """Additional tests targeting uncovered edge cases to maximize engine test coverage."""
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from unittest.mock import MagicMock
-import pytest
+
 from app.engine.funnel_engine import FunnelEngine
 from app.engine.llm_fallback import LLMProvider
 from app.engine.storage import InMemoryStorage
-from app.models.events import ActionType, Channel, EventType, NormalizedEvent
+from app.models.events import Channel, EventType, NormalizedEvent
 from app.models.flow import ConversationState, ConversationStatus
 from app.models.rules import TriggerRule
 
@@ -54,7 +54,7 @@ def test_comment_direct_dm_without_flow(empty_storage: InMemoryStorage):
 def test_expired_state_reset_on_dm(engine: FunnelEngine):
     user_id = "user_exp_dm"
     # Seed an expired state
-    old_time = datetime.now(timezone.utc) - timedelta(hours=30)
+    old_time = datetime.now(UTC) - timedelta(hours=30)
     expired_state = ConversationState(
         user_id=user_id,
         channel=Channel.SIMULATOR.value,

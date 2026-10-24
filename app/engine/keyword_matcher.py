@@ -1,8 +1,9 @@
 """Keyword matcher with exact, contains, and RapidFuzz fuzzy algorithms."""
 import re
 import string
-from typing import List, Optional, Tuple
+
 from rapidfuzz import fuzz
+
 from app.models.rules import MatchMode, TriggerRule
 
 
@@ -15,15 +16,15 @@ class KeywordMatcher:
         return text.strip().lower()
 
     @staticmethod
-    def _tokenize(text: str) -> List[str]:
+    def _tokenize(text: str) -> list[str]:
         """Extract alphanumeric words from text."""
         # Replace punctuation with spaces to tokenize
         clean = re.sub(r"[^\w\s]", " ", text.lower())
         return [w for w in clean.split() if w]
 
     def match_rule(
-        self, text: str, rule: TriggerRule, post_id: Optional[str] = None
-    ) -> Tuple[bool, Optional[str], float]:
+        self, text: str, rule: TriggerRule, post_id: str | None = None
+    ) -> tuple[bool, str | None, float]:
         """
         Check if text matches a given rule.
         Returns: (is_matched, matched_keyword, score_0_to_100)
@@ -87,8 +88,8 @@ class KeywordMatcher:
         return False, None, 0.0
 
     def find_matching_rule(
-        self, text: str, rules: List[TriggerRule], post_id: Optional[str] = None
-    ) -> Optional[Tuple[TriggerRule, str, float]]:
+        self, text: str, rules: list[TriggerRule], post_id: str | None = None
+    ) -> tuple[TriggerRule, str, float] | None:
         """
         Find the first matching rule from a list of rules.
         Returns: (matched_rule, matched_keyword, score) or None.

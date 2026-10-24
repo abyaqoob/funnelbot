@@ -1,7 +1,6 @@
 """Tests for master FunnelEngine (triggers, flow progression, interruptions, cooldowns)."""
 from app.engine.funnel_engine import FunnelEngine
 from app.models.events import ActionType, Channel, EventType, NormalizedEvent
-from app.models.flow import ConversationStatus
 
 
 def test_comment_keyword_trigger_and_flow_initiation(engine: FunnelEngine):
@@ -126,7 +125,7 @@ def test_qualification_flow_full_walkthrough_hot_lead(engine: FunnelEngine):
 
     # Check lead persisted
     leads = engine.storage.get_leads()
-    assert any(l.email == "jane@growthcorp.com" and l.tier.value == "HOT" for l in leads)
+    assert any(lead.email == "jane@growthcorp.com" and lead.tier.value == "HOT" for lead in leads)
 
 
 def test_faq_interruption_mid_flow(engine: FunnelEngine):

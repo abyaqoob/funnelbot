@@ -1,6 +1,7 @@
 """Channel Adapter Base Interface."""
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional
+from typing import Any
+
 from app.models.events import EngineAction, NormalizedEvent
 
 
@@ -9,8 +10,8 @@ class ChannelAdapter(ABC):
 
     @abstractmethod
     def normalize_inbound(
-        self, payload: Dict[str, Any], headers: Optional[Dict[str, str]] = None
-    ) -> Optional[NormalizedEvent]:
+        self, payload: dict[str, Any], headers: dict[str, str] | None = None
+    ) -> NormalizedEvent | None:
         """Convert raw channel webhook payload into standardized NormalizedEvent."""
         raise NotImplementedError
 

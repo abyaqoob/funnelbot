@@ -1,9 +1,11 @@
 """Pytest fixtures for FunnelBot (Core Engine and API Integration)."""
-from typing import Generator
-from fastapi.testclient import TestClient
+from collections.abc import Generator
+
 import pytest
+from fastapi.testclient import TestClient
 from sqlalchemy.pool import StaticPool
 from sqlmodel import Session, SQLModel, create_engine
+
 from app.api.deps import invalidate_faq_cache
 from app.data.seed_loader import load_seed_data
 from app.database import get_session

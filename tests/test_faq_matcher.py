@@ -1,5 +1,6 @@
 """Tests for FAQ matcher using TF-IDF and Cosine Similarity."""
 import pytest
+
 from app.engine.faq_matcher import FAQMatcher
 from app.models.faq import FAQConfidence, FAQItem
 

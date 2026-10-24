@@ -1,8 +1,18 @@
 """Webhook endpoints for Telegram and Instagram external channels."""
 import logging
 import secrets
-from typing import Any, Dict, Optional
-from fastapi import APIRouter, Depends, Header, HTTPException, Query, Request, Response, status
+
+from fastapi import (
+    APIRouter,
+    Depends,
+    Header,
+    HTTPException,
+    Query,
+    Request,
+    Response,
+    status,
+)
+
 from app.adapters.instagram_stub import InstagramStubAdapter
 from app.adapters.telegram import TelegramAdapter
 from app.api.deps import get_db_storage, get_funnel_engine
@@ -26,7 +36,7 @@ async def telegram_webhook(
     request: Request,
     engine: FunnelEngine = Depends(get_funnel_engine),
     storage: Storage = Depends(get_db_storage),
-    x_telegram_bot_api_secret_token: Optional[str] = Header(
+    x_telegram_bot_api_secret_token: str | None = Header(
         None, alias="X-Telegram-Bot-Api-Secret-Token"
     ),
 ):
@@ -68,9 +78,9 @@ async def telegram_webhook(
 
 @router.get("/instagram")
 def instagram_verify(
-    hub_mode: Optional[str] = Query(None, alias="hub.mode"),
-    hub_verify_token: Optional[str] = Query(None, alias="hub.verify_token"),
-    hub_challenge: Optional[str] = Query(None, alias="hub.challenge"),
+    hub_mode: str | None = Query(None, alias="hub.mode"),
+    hub_verify_token: str | None = Query(None, alias="hub.verify_token"),
+    hub_challenge: str | None = Query(None, alias="hub.challenge"),
 ):
     """
     Meta Graph API Webhook Verification Handshake.

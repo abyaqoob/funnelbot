@@ -1,5 +1,6 @@
 """Tests for pluggable LLM fallback providers."""
 from unittest.mock import MagicMock, patch
+
 from app.engine.llm_fallback import (
     GeminiLLMProvider,
     GroqLLMProvider,

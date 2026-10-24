@@ -1,9 +1,9 @@
 """SQLModel database table definitions for persistent storage."""
-from datetime import datetime, timezone
 import json
-from typing import Any, Dict, List, Optional
+from datetime import UTC, datetime
+
 from sqlmodel import Field, SQLModel
-from app.models.events import EngineAction, InspectorInfo
+
 from app.models.faq import FAQItem
 from app.models.flow import (
     ConversationState,
@@ -24,13 +24,13 @@ class RuleDB(SQLModel, table=True):
     keywords_json: str
     match_mode: str = "contains"
     fuzzy_threshold: float = 80.0
-    post_id_scope: Optional[str] = None
+    post_id_scope: str | None = None
     cooldown_seconds: int = 3600
     reply_templates_json: str
-    flow_id: Optional[str] = "lead_qualification"
-    direct_dm_message: Optional[str] = None
+    flow_id: str | None = "lead_qualification"
+    direct_dm_message: str | None = None
     is_active: bool = True
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
     def to_domain(self) -> TriggerRule:
         return TriggerRule(
@@ -73,7 +73,7 @@ class FAQItemDB(SQLModel, table=True):
     question_variants_json: str
     answer: str
     is_active: bool = True
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
     def to_domain(self) -> FAQItem:
         return FAQItem(
@@ -106,7 +106,7 @@ class FlowDB(SQLModel, table=True):
     warm_threshold: int = 40
     closing_messages_json: str
     steps_json: str
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
     def to_domain(self) -> QualificationFlow:
         steps_raw = json.loads(self.steps_json)
@@ -137,14 +137,14 @@ class ConversationStateDB(SQLModel, table=True):
 
     channel: str = Field(primary_key=True)
     user_id: str = Field(primary_key=True)
-    username: Optional[str] = None
-    flow_id: Optional[str] = None
-    current_step_id: Optional[str] = None
+    username: str | None = None
+    flow_id: str | None = None
+    current_step_id: str | None = None
     collected_answers_json: str = "{}"
     score: int = 0
     status: str = "active"
-    last_activity_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    last_activity_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
     def to_domain(self) -> ConversationState:
         return ConversationState(
@@ -179,10 +179,10 @@ class ConversationStateDB(SQLModel, table=True):
 class RuleTriggerDB(SQLModel, table=True):
     __tablename__ = "rule_triggers"
 
-    id: Optional[int] = Field(default=None, primary_key=True)
+    id: int | None = Field(default=None, primary_key=True)
     user_id: str = Field(index=True)
     rule_id: str = Field(index=True)
-    triggered_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    triggered_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
 
 class LeadDB(SQLModel, table=True):
@@ -190,14 +190,14 @@ class LeadDB(SQLModel, table=True):
 
     id: str = Field(primary_key=True)
     user_id: str
-    username: Optional[str] = None
+    username: str | None = None
     channel: str = "simulator"
-    email: Optional[str] = Field(default=None, index=True)
+    email: str | None = Field(default=None, index=True)
     score: int = 0
     tier: str = Field(default="COLD", index=True)
     flow_id: str
     answers_json: str = "{}"
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
     def to_domain(self) -> Lead:
         return Lead(
@@ -234,19 +234,19 @@ class OptOutDB(SQLModel, table=True):
 
     channel: str = Field(primary_key=True)
     user_id: str = Field(primary_key=True)
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
 
 class ConversationLogDB(SQLModel, table=True):
     __tablename__ = "conversation_logs"
 
-    id: Optional[int] = Field(default=None, primary_key=True)
+    id: int | None = Field(default=None, primary_key=True)
     channel: str
     user_id: str
-    username: Optional[str] = None
+    username: str | None = None
     event_type: str
     text: str
-    post_id: Optional[str] = None
+    post_id: str | None = None
     actions_json: str = "[]"
     inspector_json: str = "{}"
-    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(UTC))

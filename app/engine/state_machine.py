@@ -1,8 +1,9 @@
 """State machine for lead qualification flows, interruptions, and global commands."""
-from datetime import datetime, timezone
 import re
-from typing import Any, Dict, List, Optional, Tuple
+from datetime import UTC, datetime
+
 from rapidfuzz import fuzz
+
 from app.engine.storage import Storage
 from app.models.events import ActionType, Channel, EngineAction
 from app.models.flow import (
@@ -15,7 +16,6 @@ from app.models.flow import (
     QualificationFlow,
 )
 from app.models.leads import Lead
-
 
 EMAIL_REGEX = re.compile(r"^[\w\.-]+@[\w\.-]+\.[a-zA-Z]{2,}$")
 OPT_OUT_COMMANDS = {"stop", "unsubscribe", "cancel", "optout", "opt-out", "quit"}
@@ -49,14 +49,14 @@ class StateMachine:
         return False
 
     def start_flow(
-        self, channel: Channel, user_id: str, username: Optional[str], flow: QualificationFlow
-    ) -> Tuple[ConversationState, List[EngineAction]]:
+        self, channel: Channel, user_id: str, username: str | None, flow: QualificationFlow
+    ) -> tuple[ConversationState, list[EngineAction]]:
         """Initialize or reset a conversation to the first step of a flow."""
         first_step = flow.get_first_step()
         if not first_step:
             raise ValueError(f"Flow {flow.id} has no steps.")
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         state = ConversationState(
             user_id=user_id,
             username=username,
@@ -95,7 +95,7 @@ class StateMachine:
             lines.append(f"{idx}. {choice.label}")
         return "\n".join(lines)
 
-    def match_choice(self, user_text: str, choices: List[FlowChoice]) -> Optional[FlowChoice]:
+    def match_choice(self, user_text: str, choices: list[FlowChoice]) -> FlowChoice | None:
         """Match user input to one of the choices via index, exact name, synonym, or fuzzy."""
         clean = user_text.strip().lower()
 
@@ -144,8 +144,8 @@ class StateMachine:
         flow: QualificationFlow,
         user_text: str,
         channel: Channel,
-        username: Optional[str] = None,
-    ) -> Tuple[ConversationState, List[EngineAction], bool]:
+        username: str | None = None,
+    ) -> tuple[ConversationState, list[EngineAction], bool]:
         """
         Processes user text against current step.
         Returns: (updated_state, actions, is_valid_input)
@@ -154,7 +154,7 @@ class StateMachine:
         if not current_step:
             return state, [], False
 
-        actions: List[EngineAction] = []
+        actions: list[EngineAction] = []
         is_valid = False
 
         if current_step.step_type == FlowStepType.EMAIL:
@@ -201,7 +201,7 @@ class StateMachine:
             else:
                 return state, [], False
 
-        state.last_activity_at = datetime.now(timezone.utc)
+        state.last_activity_at = datetime.now(UTC)
 
         # Move to next step or complete flow
         next_step = flow.get_next_step(current_step.id)
@@ -242,7 +242,7 @@ class StateMachine:
                     email = state.collected_answers.get(step.id)
 
             lead = Lead(
-                id=f"lead_{state.user_id}_{int(datetime.now(timezone.utc).timestamp())}",
+                id=f"lead_{state.user_id}_{int(datetime.now(UTC).timestamp())}",
                 user_id=state.user_id,
                 username=username or state.username,
                 channel=channel.value,

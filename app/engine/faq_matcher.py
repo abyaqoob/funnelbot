@@ -1,8 +1,9 @@
 """FAQ matching engine using TF-IDF and Cosine Similarity."""
-from typing import List, Optional, Tuple
+
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+
 from app.models.faq import FAQConfidence, FAQItem, FAQMatchResult
 
 
@@ -12,17 +13,17 @@ class FAQMatcher:
     HIGH_THRESHOLD: float = 0.55
     MEDIUM_THRESHOLD: float = 0.30
 
-    def __init__(self, faqs: Optional[List[FAQItem]] = None):
-        self.vectorizer: Optional[TfidfVectorizer] = None
-        self.matrix: Optional[np.ndarray] = None
-        self.corpus_entries: List[Tuple[str, FAQItem]] = []
+    def __init__(self, faqs: list[FAQItem] | None = None):
+        self.vectorizer: TfidfVectorizer | None = None
+        self.matrix: np.ndarray | None = None
+        self.corpus_entries: list[tuple[str, FAQItem]] = []
         if faqs:
             self.fit(faqs)
 
-    def fit(self, faqs: List[FAQItem]) -> None:
+    def fit(self, faqs: list[FAQItem]) -> None:
         """Fit vectorizer on all active FAQ questions and variants."""
         self.corpus_entries = []
-        corpus_texts: List[str] = []
+        corpus_texts: list[str] = []
 
         for faq in faqs:
             if not faq.is_active:

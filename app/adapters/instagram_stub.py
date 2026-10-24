@@ -1,11 +1,19 @@
 """Instagram Graph API dev-mode stub adapter for comments and direct messages."""
-from datetime import datetime, timezone
 import logging
-from typing import Any, Dict, List, Optional
+from datetime import UTC, datetime
+from typing import Any
+
 import httpx
+
 from app.adapters.base import ChannelAdapter
 from app.config import settings
-from app.models.events import ActionType, Channel, EngineAction, EventType, NormalizedEvent
+from app.models.events import (
+    ActionType,
+    Channel,
+    EngineAction,
+    EventType,
+    NormalizedEvent,
+)
 
 logger = logging.getLogger("funnelbot.adapters.instagram")
 
@@ -21,9 +29,9 @@ class InstagramStubAdapter(ChannelAdapter):
 
     def __init__(
         self,
-        access_token: Optional[str] = None,
-        verify_token: Optional[str] = None,
-        page_id: Optional[str] = None,
+        access_token: str | None = None,
+        verify_token: str | None = None,
+        page_id: str | None = None,
     ):
         self._access_token = access_token
         self._verify_token = verify_token
@@ -34,14 +42,14 @@ class InstagramStubAdapter(ChannelAdapter):
         return self._verify_token or settings.INSTAGRAM_VERIFY_TOKEN
 
     @property
-    def access_token(self) -> Optional[str]:
+    def access_token(self) -> str | None:
         return self._access_token or settings.INSTAGRAM_ACCESS_TOKEN
 
     @property
-    def page_id(self) -> Optional[str]:
+    def page_id(self) -> str | None:
         return self._page_id or settings.INSTAGRAM_PAGE_ID
 
-    def verify_webhook(self, mode: Optional[str], token: Optional[str], challenge: Optional[str]) -> Optional[str]:
+    def verify_webhook(self, mode: str | None, token: str | None, challenge: str | None) -> str | None:
         """
         Handles Meta webhook verification handshake (GET hub.challenge).
         Returns challenge string if verified, or None.
@@ -54,8 +62,8 @@ class InstagramStubAdapter(ChannelAdapter):
         return None
 
     def normalize_inbound(
-        self, payload: Dict[str, Any], headers: Optional[Dict[str, str]] = None
-    ) -> Optional[NormalizedEvent]:
+        self, payload: dict[str, Any], headers: dict[str, str] | None = None
+    ) -> NormalizedEvent | None:
         """
         Extracts a single normalized event from Meta Graph API webhook payload.
         (For batch payloads, use normalize_batch).
@@ -63,12 +71,12 @@ class InstagramStubAdapter(ChannelAdapter):
         batch = self.normalize_batch(payload)
         return batch[0] if batch else None
 
-    def normalize_batch(self, payload: Dict[str, Any]) -> List[NormalizedEvent]:
+    def normalize_batch(self, payload: dict[str, Any]) -> list[NormalizedEvent]:
         """
         Parses Meta Graph API webhook JSON payload into a list of NormalizedEvents.
         Handles both comment events and direct messaging events.
         """
-        events: List[NormalizedEvent] = []
+        events: list[NormalizedEvent] = []
         entries = payload.get("entry", [])
 
         for entry in entries:
@@ -91,7 +99,7 @@ class InstagramStubAdapter(ChannelAdapter):
                                 username=username,
                                 text=text,
                                 post_id=post_id,
-                                timestamp=datetime.now(timezone.utc),
+                                timestamp=datetime.now(UTC),
                                 metadata={"comment_id": val.get("id")},
                             )
                         )
@@ -111,7 +119,7 @@ class InstagramStubAdapter(ChannelAdapter):
                             user_id=user_id,
                             username=f"ig_{user_id}",
                             text=text,
-                            timestamp=datetime.now(timezone.utc),
+                            timestamp=datetime.now(UTC),
                             metadata={"mid": message.get("mid")},
                         )
                     )

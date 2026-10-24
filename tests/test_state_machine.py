@@ -1,6 +1,8 @@
 """Tests for StateMachine (choices, regex email validation, scoring, tiers, and 24h expiration)."""
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
+
 import pytest
+
 from app.engine.state_machine import StateMachine
 from app.engine.storage import InMemoryStorage
 from app.models.events import ActionType, Channel
@@ -142,10 +144,10 @@ def test_state_expiration_24h(empty_storage: InMemoryStorage, flow: Qualificatio
     state, _ = sm.start_flow(Channel.SIMULATOR, "user_exp", "eve", flow)
 
     # Set last activity to 25 hours ago
-    state.last_activity_at = datetime.now(timezone.utc) - timedelta(hours=25)
+    state.last_activity_at = datetime.now(UTC) - timedelta(hours=25)
     assert state.is_expired(timeout_seconds=86400) is True
 
     # Fresh state is not expired
     fresh_state = state.model_copy()
-    fresh_state.last_activity_at = datetime.now(timezone.utc)
+    fresh_state.last_activity_at = datetime.now(UTC)
     assert fresh_state.is_expired(timeout_seconds=86400) is False

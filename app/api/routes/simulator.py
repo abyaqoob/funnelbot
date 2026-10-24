@@ -1,9 +1,10 @@
 """Simulator endpoints for recruiter interactive demo."""
-from datetime import datetime, timezone
 import html
-from typing import Dict, Optional
-from fastapi import APIRouter, Depends, Header, HTTPException, Request, status
+from datetime import UTC, datetime
+
+from fastapi import APIRouter, Depends, Header, HTTPException, status
 from pydantic import BaseModel, Field
+
 from app.api.deps import get_db_storage, get_funnel_engine
 from app.config import settings
 from app.engine.funnel_engine import FunnelEngine
@@ -13,7 +14,7 @@ from app.models.events import Channel, EngineResult, EventType, NormalizedEvent
 router = APIRouter(prefix="/api/simulator", tags=["Simulator"])
 
 # In-memory idempotency cache: {key: (timestamp, EngineResult)}
-_idempotency_cache: Dict[str, EngineResult] = {}
+_idempotency_cache: dict[str, EngineResult] = {}
 
 
 class SimulatorEventRequest(BaseModel):
@@ -22,7 +23,7 @@ class SimulatorEventRequest(BaseModel):
     user_id: str = "demo_recruiter"
     username: str = "recruiter"
     text: str = Field(..., max_length=1000)
-    post_id: Optional[str] = "post_demo_1"
+    post_id: str | None = "post_demo_1"
 
 
 class SimulatorResetRequest(BaseModel):
@@ -35,7 +36,7 @@ def process_simulator_event(
     payload: SimulatorEventRequest,
     engine: FunnelEngine = Depends(get_funnel_engine),
     storage: Storage = Depends(get_db_storage),
-    x_idempotency_key: Optional[str] = Header(None, alias="X-Idempotency-Key"),
+    x_idempotency_key: str | None = Header(None, alias="X-Idempotency-Key"),
 ):
     """
     Process inbound simulated comment or DM, run through the funnel engine,
@@ -63,7 +64,7 @@ def process_simulator_event(
         username=payload.username,
         text=escaped_text,
         post_id=payload.post_id,
-        timestamp=datetime.now(timezone.utc),
+        timestamp=datetime.now(UTC),
     )
 
     # 4. Engine Processing
